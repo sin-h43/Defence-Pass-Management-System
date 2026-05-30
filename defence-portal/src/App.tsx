@@ -1,5 +1,5 @@
 import {Routes, Route, Navigate} from 'react-router-dom';
-import EmployeeDashboard from './pages/employee/EmployeeDashboard';
+import EmployeeDashboard from './pages/employee/EmployeeDash.tsx';
 
 //placeholder for HR n Security until we write their full code 
 const HRDashboard = () => (
