@@ -7,7 +7,7 @@ export default function EmployeeDashboard() {
   //FT-3 state to control opening. closing the registration form
   const [visitorCategory, setVisitorCategory] = useState('new');
   //State to track which clearance level button is selected inside the form
-  const [clearanceLevel, setClearanceLevel] = useState('Level 2');
+  const [clearanceLevel, setClearanceLevel] = useState<string | null>(null);
   //anchor reference used to target the registration block for scorlling
   const registrationFormRef = useRef<HTMLDivElement>(null);
   const scrollToRegistrationForm = () => {
@@ -100,7 +100,7 @@ export default function EmployeeDashboard() {
         {/*overflow-y-auto allows the main content area to scroll vertically if the content exceeds the viewport height, ensuring that all content remains accessible without breaking the layout.*/}
         
         {/* Top Header Navigation Panel */}
-        <header className="h-16 bg-[#161b22]/80 border-b border-[#21262d] shrink-0 flex items-center justify-between px-6 z-10">
+        <header className="h-16 bg-gray-900 border-b border-[#21262d] shrink-0 flex items-center justify-between px-6 z-10">
           {/*Hamburger menu*/}
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -127,7 +127,7 @@ export default function EmployeeDashboard() {
 
           {/* ZONE 2 & 3: RIGHT SIDE PLACEHOLDER FOR NEXT STEP (FIXED: Container handles notification bell inside header alignment) */}
           <div className="flex items-center gap-4 shrink-0">
-            {/*nOTIFICATION bELL iCON Button */}
+            {/*Notification Button */}
             <button 
               onClick={() => setShowNotifications(!showNotifications)}
               className="relative text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-[#21262d] transition-all cursor-pointer"
@@ -163,12 +163,12 @@ export default function EmployeeDashboard() {
                   <h3 className="text-base font-semibold text-gray-200 group-hover:text-amber-400 transition-colors">Register New Visitor</h3>
                   <p className="text-xs text-gray-400 max-w-sm">Initiate check-in workflow, capture identification records, and issue temporary gate entry passes.</p>
                 </div>
-                <div className=" p-3 rounded-lg bg-amber-500/10 text-amber-400 shrink-0" >
+                <div onClick = {scrollToRegistrationForm} className=" p-3 rounded-lg bg-amber-500/10 text-amber-400 shrink-0" >
                   <UserPlus className="h-5 w-5" />
                   <span className="text-lg font-semibold text-white">Add Visitor</span>
                 </div>
               </div>
-              <div className="mt-6 flex items-center text-xs font-semibold text-amber-500 gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+              <div onClick = {scrollToRegistrationForm} className="mt-6 flex items-center text-xs font-semibold text-amber-500 gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                 <span>Open Registration Form</span>
                 <span>→</span>
               </div>

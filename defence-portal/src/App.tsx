@@ -20,15 +20,7 @@ function App(){
     <div className="min-h-screen bg-gray-900">
       <Routes>
         {/* 1.Employee Dashboard */}
-        <Route path="/employee" element={
-          <div className="p-8 max-w-7xl mx-auto">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold tracking-tight text-white">Employee Command Console</h2>
-              <p className="text-sm text-gray-400">Manage security clearances and track inbound guest access keys.</p>
-            </div>
-            <EmployeeDashboard />
-          </div>
-        } />
+        <Route path="/employee" element={<EmployeeDashboard />} />
         {/* 2.HR Dashboard */}
         <Route path="/hr" element={<HRDashboard />} />
         {/* 3.Security Dashboard */}
