@@ -108,7 +108,7 @@ export default function EmployeeDashboard() {
             <Menu className="h-5 w-5" />
           </button>
           
-          {/*Search Bar (FIXED: Added max width so it doesn't crowd out right-side header items)*/}
+          {/*Search Bar: max width so it doesn't crowd out right-side header items)*/}
           <div className="relative w-full max-w-md mx-4 group">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400 group-focus-within:text-amber-500 transition-colors" />
             <input 
@@ -297,13 +297,29 @@ export default function EmployeeDashboard() {
                 </div>
               </div>
               {/* Grid text Inputs */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-1.5">
                   <label className="block text-gray-300 font-medium">Full Name</label>
                   <input
                     type="text"
                     required placeholder="e.g. Sinchana K"
-                    className="bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-amber-500"
+                    className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-amber-500 "
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="block text-gray-300 font-medium">Email</label>
+                  <input
+                    type="email"
+                    required placeholder="e.g. name@gmail.com"
+                    className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="block text-gray-300 font-medium">Date of Birth</label>
+                  <input
+                    type="date"
+                    required placeholder="dd/mm/yyyy"
+                    className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-amber-500"
                   />
                 </div>
               </div>
