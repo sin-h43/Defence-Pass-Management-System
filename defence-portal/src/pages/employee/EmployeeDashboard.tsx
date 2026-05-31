@@ -335,16 +335,18 @@ export default function EmployeeDashboard() {
                   <label className="block text-gray-300 font-medium">Full Name</label>
                   <input
                     type="text"
-                    required placeholder="e.g. Sinchana K"
-                    className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-amber-500 "
-                  />
+                    required
+                    placeholder="e.g. Sinchana K"
+                    className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-white placeholder:text-gray-500 focus:outline-none focus:border-amber-500 focus:bg-[#12161d] transition-all"
+                  />              
                 </div>
                 <div className="space-y-1.5">
                   <label className="block text-gray-300 font-medium">Email</label>
                   <input
                     type="email"
-                    required placeholder="e.g. name@gmail.com"
-                    className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-amber-500"
+                    required
+                    placeholder="e.g. name@gmail.com"
+                    className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-white placeholder:text-gray-500 focus:outline-none focus:border-amber-500 focus:bg-[#12161d] transition-all"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -422,7 +424,7 @@ export default function EmployeeDashboard() {
                             value={escort.name}
                             onChange={(e) => updateEscortField(index, 'name',e.target.value)}
                             placeholder="e.g. Rahul Sharma"
-                            className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-1.5 focus:outline-none focus:border-gray-600 text-gray-200 focus:bg-[#161b22]  transition-all"
+                            className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-1.5 focus:outline-none focus:border-gray-600 text-gray-200 focus:bg-[#12161d]  transition-all"
                           />
                         </div>
 
