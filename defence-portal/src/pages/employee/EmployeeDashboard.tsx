@@ -17,8 +17,34 @@ export default function EmployeeDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   //FT-7 state to track the number of accompanying guests
   const [headCount, setHeadCount] = useState(0);
+  //FT-8 Persistent state to store typed escort details
+  const [escortList, setEscortList] = useState<{ name: string; idRef: string }[]>([]);
 
+  const handleHeadCountChange = (newCount: number) => {
+    const targetCount = Math.max(0, newCount);
+    setHeadCount(targetCount);
 
+  setEscortList((prevList)=>{
+    if(prevList.length < targetCount){
+      //scalling UP, append empty objs == target count
+      const shortBy = targetCount - prevList.length;
+      const extension = Array.from({length: shortBy}, ()=>({name:'', idRef:''}));
+    return [...prevList, ...extension];
+  }else if (targetCount < prevList.length){
+    //scaling DOWN, trim the list to target count
+    return prevList.slice(0, targetCount);
+  }
+    return prevList;
+  });
+};
+  //FT 9 Handler functions to update the escort details in state on input change
+  const updateEscortField = (index: number, field: 'name' | 'idRef', value: string) => {
+    setEscortList((prevList) => {
+      const updated = [...prevList];
+      updated[index] = { ...updated[index], [field]: value };
+      return updated;
+    });
+  };
   return (
     // outer container (FIXED: Corrected typo 'oveflow-hidden' to 'overflow-hidden')
     <div className="flex h-screen w-screen bg-[#0e121a] text-white font-sans overflow-hidden">
@@ -348,8 +374,9 @@ export default function EmployeeDashboard() {
                   <input
                     type="number"
                     min="0"
-                    value={headCount}
-                    onChange={(e) => setHeadCount(Math.max(0, parseInt(e.target.value) || 0))}
+                    max="10"
+                    value={headCount || ''}
+                    onChange={(e) => handleHeadCountChange(Math.max(0, parseInt(e.target.value) || 0))}
                     className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-gray-500"
                     // required placeholder="Number of accompanying guests (0 if none)"
                   />
@@ -369,10 +396,11 @@ export default function EmployeeDashboard() {
                   </div>
                   {/*Generate structured rows matching the headcount exactly */}
                   <div className="space-y-3 divide-y divide-[#21262d]/40">
-                    {Array.from({ length: headCount }, (_, index) => (
+                    {escortList.map((escort, index) => (
                       <div key={index} className={`grid grid-cols-1 sm:grid-cols-2 gap-4 ${
                         index > 0 ? 'pt-3.5' : ''
                       }`}>
+                        {/*Member name controlled input */}
                         <div className="space-y-1.5">
                           <label className="block text-gray-500 font-medium flex items-center gap-1.5">
                             <span className="text-[10px] bg-gray-800 text-gray-400 h-4 w-4 rounded flex items-center justify-center font-mono font-bold">
@@ -382,6 +410,9 @@ export default function EmployeeDashboard() {
                           </label>
                           <input 
                             type="text"
+                            required 
+                            value={escort.name}
+                            onChange={(e) => updateEscortField(index, 'name',e.target.value)}
                             placeholder="e.g. Rahul Sharma"
                             className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-1.5 focus:outline-none focus:border-gray-600 text-gray-200 focus:bg-[#161b22]  transition-all"
                           />
@@ -395,6 +426,8 @@ export default function EmployeeDashboard() {
                           <input 
                             type="text" 
                             required 
+                            value={escort.idRef}
+                            onChange={(e) => updateEscortField(index, 'idRef',e.target.value)}
                             placeholder="12-Digit Aadhaar / PAN" 
                             className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-1.5 text-gray-200 placeholder-gray-700 focus:outline-none focus:border-gray-600 focus:bg-[#12161d] transition-all" 
                           />
