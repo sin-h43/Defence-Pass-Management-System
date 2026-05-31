@@ -15,6 +15,8 @@ export default function EmployeeDashboard() {
   };
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  //FT-7 state to track the number of accompanying guests
+  const [headCount, setHeadCount] = useState(0);
 
 
   return (
@@ -322,15 +324,31 @@ export default function EmployeeDashboard() {
                     className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-amber-500"
                   />
                 </div>
-              </div>
-              <div className="space-y-1.5">
+                <div className="space-y-1.5">
                   <label className="block text-gray-300 font-medium">Govt Issued ID Ref</label>
-                  <input type="text" required placeholder="Aadhaar / Passport Num" className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-gray-500 text-gray-200" />
+                  <input type="text" required placeholder="Aadhaar / PAN Card Number" className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-gray-500 text-gray-200" />
+                </div>
+              </div>
+              {/*Permanent Address / Agency Address */}
+              <div className="space-y-1.5">
+                <label className="block text-gray-300 font-medium">Permanent Address</label>
+                <input type="text" required placeholder="e.g. House/Office No, Street, City, State, Pincode" className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-gray-500 text-gray-200" />
               </div>
               {/* Purpose Input */}
               <div className="space-y-1.5">
                 <label className="block text-gray-300 font-medium">Purpose of Entry / Host Organization</label>
                 <input type="text" required placeholder="e.g. Meeting with the Team Lead" className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-gray-500 text-gray-200" />
+              </div>
+              {/* Linked Headcount Input box tracking changes dynamically */}
+              <div className="space-y-1.5">
+                  <label className="block text-gray-300 font-medium">Head Count</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={headCount}
+                    onChange={(e) => setHeadCount(Math.max(0, parseInt(e.target.value) || 0))}
+                    className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-gray-500"
+                  />
               </div>
               {/* Feature 4: Clearance Level Selection Badge Grid */}
               <div className="space-y-2">
