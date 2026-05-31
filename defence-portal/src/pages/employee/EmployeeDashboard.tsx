@@ -1,4 +1,4 @@
-import { Search, Menu, Bell, LogOut, ClipboardList, Settings, Shield, History, UserPlus, ChevronDown } from 'lucide-react';
+import { Search, Menu, Bell, ClipboardList, Settings, Shield, History, UserPlus, ChevronDown, LogOut } from 'lucide-react';
 import { useRef, useState } from 'react';
 
 export default function EmployeeDashboard() {
@@ -14,7 +14,7 @@ export default function EmployeeDashboard() {
     registrationFormRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
 
   return (
@@ -50,26 +50,48 @@ export default function EmployeeDashboard() {
             className={`h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors ${
               isSidebarOpen? 'px-3 justify-start' : 'justify-center p-0'
             }`}
-            title='Reate Visitor Logs'
+            title='Repeated Visitor Logs'
             >
             <History className="h-4 w-4 shrink-0"/>
-            {isSidebarOpen && <span className='ml-2'>Repeat Visitor</span>}
+            {isSidebarOpen && <span className='ml-2'>Repeated Visitor</span>}
           </div> 
           <div className={`h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors ${
-            isSidebarOpen? 'px-3 justify-start' : ''
+            isSidebarOpen? 'px-3 justify-start' : 'justify-center p-0'
             }`}>
-            <ClipboardList className="h-4 w-4 mr-2"/>
-            <span>Request History</span>
+            <ClipboardList className="h-4 w-4 shrink-0"/>
+            {isSidebarOpen && <span className='ml-2'>Pre-Scheduled Visits</span>}
           </div> 
-          <div className="h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors whitespace-nowrap">
-            <Settings className="h-4 w-4 mr-2"/>
-            <span>Settings</span>
+          <div 
+            className={`h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors whitespace-nowrap ${
+              isSidebarOpen? 'px-3 justify-start' : 'justify-center p-0'
+            }`}
+            title='Settings & Preferences'>
+            <Settings className="h-4 w-4 shrink-0"/>
+            {isSidebarOpen && <span className='ml-2'>Settings</span>}
           </div> 
         </div>
-        <button className="w-full h-11 bg-gray-800 border border-gray-600 hover:bg-red-950/20 hover:border-red-900/50 rounded text-sm text-white hover:text-red-400 transition-all flex items-center justify-center gap-2 mt-auto whitespace-nowrap">
-          <LogOut className="h-3.5 w-3.5" />
-          <span>Logout Portal</span>
-        </button>
+        {/* Feature 7: Responsive Logout Slot */}
+        <div className={`mt-auto w-full transition-all duration-200 ${
+          isSidebarOpen 
+            ? 'p-0' 
+            : 'flex justify-center'
+        }`}>
+          <button 
+            onClick={() => alert("Logging out of Defence Session...")}
+            className={`w-full flex items-center justify-center text-white hover:text-red-400 transition-all cursor-pointer ${
+              isSidebarOpen 
+                ? 'h-12 bg-gray-800 border border-gray-700 rounded text-xs hover:bg-red-950/10 hover:border-red-900/40 gap-2' 
+                : 'h-10 w-10 bg-red-950/10 rounded-lg hover:bg-red-950/30 text-red-400/70 hover:text-red-400'
+            }`}
+            title="Logout Portal Session"
+          >
+            {/* Imports the standard power logout arrow icon asset */}
+            <LogOut className="h-4 w-4 shrink-0" />
+            
+            {/* Conditional formatting to slide text strings out of layout dynamically */}
+            {isSidebarOpen && <span className="font-medium">Logout Portal</span>}
+          </button>
+        </div>
       </aside>
 
       {/* 2.main */}
@@ -80,7 +102,9 @@ export default function EmployeeDashboard() {
         {/* Top Header Navigation Panel */}
         <header className="h-16 bg-[#161b22]/80 border-b border-[#21262d] shrink-0 flex items-center justify-between px-6 z-10">
           {/*Hamburger menu*/}
-          <button className="text-gray-400 hover:text-white p-1 rounded-md transition-colors cursor-pointer shrink-0">
+          <button 
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="text-gray-400 hover:text-white p-1 rounded-md transition-colors cursor-pointer shrink-0">
             <Menu className="h-5 w-5" />
           </button>
           
