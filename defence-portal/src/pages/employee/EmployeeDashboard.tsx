@@ -1,4 +1,4 @@
-import { Search, Menu, Bell, ClipboardList, Settings, Shield, History, UserPlus, ChevronDown, LogOut } from 'lucide-react';
+import { Search, Menu, Bell, ClipboardList, Settings, Shield, History, UserPlus, ChevronDown, LogOut, Users } from 'lucide-react';
 import { useRef, useState } from 'react';
 
 export default function EmployeeDashboard() {
@@ -329,16 +329,19 @@ export default function EmployeeDashboard() {
                   <input type="text" required placeholder="Aadhaar / PAN Card Number" className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-gray-500 text-gray-200" />
                 </div>
               </div>
+              
               {/*Permanent Address / Agency Address */}
               <div className="space-y-1.5">
                 <label className="block text-gray-300 font-medium">Permanent Address</label>
                 <input type="text" required placeholder="e.g. House/Office No, Street, City, State, Pincode" className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-gray-500 text-gray-200" />
               </div>
+
               {/* Purpose Input */}
               <div className="space-y-1.5">
                 <label className="block text-gray-300 font-medium">Purpose of Entry / Host Organization</label>
                 <input type="text" required placeholder="e.g. Meeting with the Team Lead" className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-gray-500 text-gray-200" />
               </div>
+
               {/* Linked Headcount Input box tracking changes dynamically */}
               <div className="space-y-1.5">
                   <label className="block text-gray-300 font-medium">Head Count</label>
@@ -348,8 +351,62 @@ export default function EmployeeDashboard() {
                     value={headCount}
                     onChange={(e) => setHeadCount(Math.max(0, parseInt(e.target.value) || 0))}
                     className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-gray-500"
+                    // required placeholder="Number of accompanying guests (0 if none)"
                   />
               </div>
+              {/*Dynamic Escorted Manifest Row Generator*/}
+              {headCount > 0 && (
+                <div className="bg-[#161b22]/50 border border-[#21262d] rounded-lg p-4 space-y-3.5 animate-fade-in">
+                  {/* Manifest Section Header */}
+                  <div className="flex items-center justify-between border-b border-[#21262d] pb-2">
+                    <div className="flex items-center gap-2 text-amber-500">
+                      <Users className="h-3.5 w-3.5" />
+                      <h4 className="font-semibold text-xs text-gray-200">Escorted Group Manifest</h4>
+                    </div>
+                    <span className="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full font-medium border border-amber-500/10">
+                      {headCount} {headCount  === 1 ? 'Accompanying Member' : 'Members Required'}
+                    </span>
+                  </div>
+                  {/*Generate structured rows matching the headcount exactly */}
+                  <div className="space-y-3 divide-y divide-[#21262d]/40">
+                    {Array.from({ length: headCount }, (_, index) => (
+                      <div key={index} className={`grid grid-cols-1 sm:grid-cols-2 gap-4 ${
+                        index > 0 ? 'pt-3.5' : ''
+                      }`}>
+                        <div className="space-y-1.5">
+                          <label className="block text-gray-500 font-medium flex items-center gap-1.5">
+                            <span className="text-[10px] bg-gray-800 text-gray-400 h-4 w-4 rounded flex items-center justify-center font-mono font-bold">
+                              {String(index + 1).padStart(2, '0')}
+                            </span>
+                            <span>Member Full Name</span>
+                          </label>
+                          <input 
+                            type="text"
+                            placeholder="e.g. Rahul Sharma"
+                            className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-1.5 focus:outline-none focus:border-gray-600 text-gray-200 focus:bg-[#161b22]  transition-all"
+                          />
+                        </div>
+
+                        {/* Member ID Input */}
+                        <div className="space-y-1.5">
+                          <label className="block text-gray-500 font-medium pt-0.5 sm:pt-0 pl-0 sm:pl-5">
+                            Member Aadhaar / Govt ID Num
+                          </label>
+                          <input 
+                            type="text" 
+                            required 
+                            placeholder="12-Digit Aadhaar / PAN" 
+                            className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-1.5 text-gray-200 placeholder-gray-700 focus:outline-none focus:border-gray-600 focus:bg-[#12161d] transition-all" 
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                </div>
+              )}
+                  
+                      
               {/* Feature 4: Clearance Level Selection Badge Grid */}
               <div className="space-y-2">
                 <label className="block text-gray-300 font-medium">Assigned Zone Clearance Level</label>
