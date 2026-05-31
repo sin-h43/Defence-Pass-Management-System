@@ -21,22 +21,27 @@ export default function EmployeeDashboard() {
   const [escortList, setEscortList] = useState<{ name: string; idRef: string }[]>([]);
 
   const handleHeadCountChange = (newCount: number) => {
-    const targetCount = Math.max(0, newCount);
-    setHeadCount(targetCount);
+    if(isNaN(newCount)) return;
+    setHeadCount(newCount);
 
-  setEscortList((prevList)=>{
-    if(prevList.length < targetCount){
-      //scalling UP, append empty objs == target count
-      const shortBy = targetCount - prevList.length;
-      const extension = Array.from({length: shortBy}, ()=>({name:'', idRef:''}));
-    return [...prevList, ...extension];
-  }else if (targetCount < prevList.length){
-    //scaling DOWN, trim the list to target count
-    return prevList.slice(0, targetCount);
-  }
+    if(newCount === 0) return;
+
+    const targetCount = Math.max(0, newCount);
+    
+
+    setEscortList((prevList)=>{
+      if(prevList.length < targetCount){
+        //scalling UP, append empty objs == target count
+        const shortBy = targetCount - prevList.length;
+        const extension = Array.from({length: shortBy}, ()=>({name:'', idRef:''}));
+      return [...prevList, ...extension];
+      }else if (targetCount < prevList.length){
+        //scaling DOWN, trim the list to target count
+      return prevList.slice(0, targetCount);
+      }
     return prevList;
-  });
-};
+    });
+  };
   //FT 9 Handler functions to update the escort details in state on input change
   const updateEscortField = (index: number, field: 'name' | 'idRef', value: string) => {
     setEscortList((prevList) => {
@@ -375,8 +380,11 @@ export default function EmployeeDashboard() {
                     type="number"
                     min="0"
                     max="10"
-                    value={headCount || ''}
-                    onChange={(e) => handleHeadCountChange(Math.max(0, parseInt(e.target.value) || 0))}
+                    value={headCount === 0 ? '' : headCount}
+                    onChange={(e) => {
+                      const val = e.target.value === '' ? 0 : parseInt(e.target.value);
+                      handleHeadCountChange(val);
+                    }}
                     className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-gray-500"
                     // required placeholder="Number of accompanying guests (0 if none)"
                   />
