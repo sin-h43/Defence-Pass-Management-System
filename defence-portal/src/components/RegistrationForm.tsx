@@ -61,9 +61,26 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    //validation check
+    if(!uploadedFile){
+        alert("Please upload the required verification document before submitting the form.");
+        return;
+    }
     alert('Form submitted successfully!');
     if(onSubmitSuccess){
-      onSubmitSuccess({visitorCategory, clearanceLevel, headCount, escortList});
+      onSubmitSuccess({
+        name,
+        email,
+        dob,
+        idRef,
+        address,
+        purpose,
+        visitorCategory,
+        clearanceLevel,
+        headCount,
+        escortList,
+        fileName: uploadedFile.name,
+    });
     }
   };
 
@@ -131,13 +148,14 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                 </div>
               </div>
               {/* Grid text Inputs */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-1.5">
                   <label className="block text-gray-300 font-medium">Full Name</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Sinchana K"
+                    onChange={(e) => setName(e.target.value)}
                     className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-white placeholder:text-gray-500 focus:outline-none focus:border-amber-500 focus:bg-[#12161d] transition-all"
                   />              
                 </div>
@@ -147,6 +165,7 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                     type="email"
                     required
                     placeholder="e.g. name@gmail.com"
+                    onChange = {(e)=> setEmail(e.target.value)}
                     className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-white placeholder:text-gray-500 focus:outline-none focus:border-amber-500 focus:bg-[#12161d] transition-all"
                   />
                 </div>
@@ -155,13 +174,26 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                   <input
                     type="date"
                     required placeholder="dd/mm/yyyy"
+                    onChange={(e) => setDob(e.target.value)}
                     className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-amber-500"
                   />
                 </div>
-                <div className="space-y-1.5">
-                  <label className="block text-gray-300 font-medium">Govt Issued ID Ref</label>
-                  <input type="text" required placeholder="Aadhaar / PAN Card Number" className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-gray-500 text-gray-200" />
-                </div>
+              </div>
+
+              {/* Govt ID with Character Length Restrictions */}
+              <div className="space-y-1.5">
+                <label className="block text-gray-300 font-medium">Govt Issued ID Ref *</label>
+                <input
+                    type="text"
+                    required
+                    // Pinned maximum limit directly on the DOM element wrapper
+                    maxLength={12} 
+                    value={idRef}
+                    // Strips spaces, hyphens, and symbols so they don't eat into your max length limit
+                    onChange={(e) => setIdRef(e.target.value.replace(/[^a-zA-Z0-9]/g, ''))}
+                    placeholder="12-Digit Aadhaar / Alpha-Numeric PAN"
+                    className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500 text-gray-200 focus:bg-[#12161d]"
+                />
               </div>
               
               {/*Permanent Address / Agency Address */}
