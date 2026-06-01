@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {UserPlus, ChevronDown, Users} from "lucide-react";
+import {UserPlus, ChevronDown, Users, Upload, FileCheck} from "lucide-react";
 
 interface RegistrationFormProps {
     showHRFeatures? : boolean;
@@ -7,6 +7,15 @@ interface RegistrationFormProps {
 }
 
 export default function RegistrationForm({ showHRFeatures = false, onSubmitSuccess }: RegistrationFormProps) {
+
+    //primary Form state trackers
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [dob, setDob] = useState('');
+    const [idRef, setIdRef] = useState('');
+    const [address, setAddress] = useState('');
+    const [purpose, setPurpose] = useState('');
+
     //FT-3 state to control opening. closing the registration form
   const [visitorCategory, setVisitorCategory] = useState('new');
   //State to track which clearance level button is selected inside the form
@@ -15,6 +24,11 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
   const [headCount, setHeadCount] = useState(0);
   //FT-8 Persistent state to store typed escort details
   const [escortList, setEscortList] = useState<{ name: string; idRef: string }[]>([]);
+
+//drag n drop state elements
+    const [isDragging, setIsDragging] = useState(false);
+    const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
     const handleHeadCountChange = (newCount: number) => {
     if (isNaN(newCount)) return;
     setHeadCount(newCount);
@@ -53,6 +67,38 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
     }
   };
 
+  const processSingleFile = (files: FileList | null) => {
+    if (files && files[0]) {
+        const file = files[0];
+
+        // Optional security check: limit to 5MB
+      if (file.size > 5 * 1024 * 1024) {
+        alert("Security Pass Denied: File size exceeds the 5MB limit.");
+        return;
+      }
+        setUploadedFile(file);
+  }
+};
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    processSingleFile(e.dataTransfer.files);
+  };
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+        processSingleFile(e.target.files);
+    }
+};
   return (
         <div className="bg-gray-900 border border-[#21262d] rounded-xl shadow-xl overflow-hidden flex flex-col scroll-mt-6">
             {/*Form Section Header */}
@@ -241,20 +287,57 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                   </div>
                 </div>
               </div>
-              {/* Feature 4: Document Upload Selector Area */}
+              {/* Feature 4: Document Upload Selector Area: drag n drop- fully function */}
               <div className="space-y-1.5">
                 <label className="block text-gray-300 font-medium">Scan Verification Documents</label>
-                <div className="border border-dashed border-[#30363d] bg-[#0d1117] rounded-lg p-4 text-center cursor-pointer hover:border-gray-500 transition-colors group">
-                  <input type="file" className="hidden" id="inline-doc-upload" />
+                <div
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    className={`border-2 border-dashed rounded-lg p-5 text-center cursor-pointer transition-all group ${
+                        isDragging ? 'border-amber-500 bg-amber-500/5 shadow-inner ' : 'border-[#30363d] bg-[#0d1117] hover:border-gray-500'
+                    }`}
+                >
+                  <input type="file" className="hidden" id="inline-doc-upload"
+                    onChange={handleFileChange}
+                    accept=".pdf, .png, .jpg, .jpeg"
+                  />
                   <label htmlFor="inline-doc-upload" className="cursor-pointer space-y-1 block">
-                    <span className="text-amber-500 font-semibold block group-hover:underline">Upload Digital ID Credentials</span>
-                    <span className="text-[10px] text-gray-500 block">PDF, PNG, or JPG up to 5MB (Automatic encryption applied)</span>
+                    <div className="flex flex-col items-center justify-center gap-1.5">
+                        {uploadedFile ? (
+                            <div className="space-y-1.5">
+                                <FileCheck className="h-6 w-6 text-emerald-400 animate-pulse" />
+                                <span className="text-emerald-400 font-semibold block break-all">
+                                    {uploadedFile.name} ({Math.round(uploadedFile.size / 1024)}KB)
+                                </span>
+                                <button 
+                                    type="button"
+                                    onClick={(e) =>{
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        setUploadedFile(null);
+                                    }}
+                                    className="mt-1 text-xs text-red-400 hover:text-red-300 font-medium underline text-[10px] block mx-auto cursor-pointor transition-colors"
+                                >
+                                    Remove & Upload Again
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                <Upload className="h-6 w-6 text-gray-500 group-hover:text-amber-500 transition-colors" />
+                                <span className="text-amber-500 font-semibold block group-hover:underline">Drag & Drop or Click to Upload Credentials</span>
+                                <span className="text-[10px] text-gray-500 block">PDF, PNG, or JPG up to 5MB (Automatic encryption applied)</span>
+                            </>
+                        )}
+                    </div>
                   </label>
                 </div>
               </div>
               {/*Submit Button */}
               <div className="pt-4 flex items-center justify-end gap-2">
-                <button type="reset" className="px-4 py-2 bg-transparent border border-gray-700 hover:bg-gray-800 rounded-lg text-gray-300 hover:text-white font-medium transition">
+                <button type="reset"
+                 onClick={() => setUploadedFile(null)}
+                 className="px-4 py-2 bg-transparent border border-gray-700 hover:bg-gray-800 rounded-lg text-gray-300 hover:text-white font-medium transition">
                   Reset Form
                 </button>
                 <button type="submit" className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-[#0d1117] font-bold rounded-lg transition nded-lg transition shadow-lg shadow-amber-500/10">
