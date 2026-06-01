@@ -26,6 +26,8 @@ function App(){
         <Route path="/employee/dispatchedPassLog" element={<DispatchedPassLog />} />
         {/* 3.Security Dashboard */}
         <Route path="/security" element={<SecurityDashboard />} />
+        {/* 4.HR Dashboard */}
+        <Route path="/hr" element={<HRDashboard />} />
         {/* Redirect to employee dashboard as default */}
         <Route path="/" element={<Navigate to="/employee" />} />
       </Routes>
