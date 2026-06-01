@@ -1,7 +1,9 @@
-import { Search, Menu, Bell, ClipboardList, Settings, Shield, History, UserPlus, LogOut } from 'lucide-react';
+import {Search, Bell, ClipboardList, Settings, Shield, History, UserPlus, LogOut, PanelRight, PanelLeft } from 'lucide-react';
 import { useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DataTable from '../../components/DataTable';
 import RegistrationForm from '../../components/RegistrationForm';
+// import DispatchedPassLog from '../../components/DispatchedPassLog';
 
 
 export default function EmployeeDashboard() {
@@ -15,14 +17,36 @@ export default function EmployeeDashboard() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
-  //FT-9 reusable datatable
-  const activityHeaders = ["Pass ID", "Visitor Name", "Purpose / Agency", "Check-In Time", "Visitor Type", "Pass Status"];
+  const navigate = useNavigate();
+
+  const activityHeaders = [
+    'ID',
+    'Visitor Name',
+    'Purpose',
+    'Time',
+    'Visitor Type',
+    'Status',
+  ];
+
   const [activityRows, setActivityRows] = useState([
-    { id: "DEF-9402", name: "Rajesh Kumar", purpose: "CPWD Maintenance", time: "02:15 PM", type: "New Visitor/Urgent Access", status: "Checked In" },
-    { id: "DEF-8831", name: "Dr. Sunita Sharma", purpose: "DRDO Technical Review", time: "01:40 PM", type: "Pre-Scheduled Clearance", status: "Pending Clearance" },
-    { id: "DEF-7110", name: "Amit Patel", purpose: "Logistics Delivery", time: "11:05 AM", type: "Repeated Visitor", status: "Checked Out" }
+    {
+      id: 'DEF-1001',
+      name: 'John Doe',
+      purpose: 'Contractor Check-in',
+      time: '08:45 AM',
+      type: 'New Visitor/Urgent Access',
+      status: 'Cleared',
+    },
+    {
+      id: 'DEF-1002',
+      name: 'Jane Smith',
+      purpose: 'Vendor Delivery',
+      time: '09:15 AM',
+      type: 'New Visitor/Urgent Access',
+      status: 'Pending Clearance',
+    },
   ]);
- 
+
   return (
     // outer container (FIXED: Corrected typo 'oveflow-hidden' to 'overflow-hidden')
     <div className="flex h-screen w-screen bg-[#0e121a] text-white font-sans overflow-hidden">
@@ -44,7 +68,7 @@ export default function EmployeeDashboard() {
           {/*New Visitor Button */}
           <div 
             onClick = {scrollToRegistrationForm}
-            className={`h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors w-full ${
+            className={`h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center text-sm hover:bg-gray-800 cursor-pointer transition-colors w-full ${
               isSidebarOpen? 'px-3 justify-start' : 'justify-center p-0'
             }`}
             title="New Visitor Registration"
@@ -53,7 +77,7 @@ export default function EmployeeDashboard() {
             {isSidebarOpen && <span className='ml-2'>New Visitor</span>}
           </div> 
           <div 
-            className={`h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors ${
+            className={`w-full h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors ${
               isSidebarOpen? 'px-3 justify-start' : 'justify-center p-0'
             }`}
             title='Repeated Visitor Logs'
@@ -61,14 +85,14 @@ export default function EmployeeDashboard() {
             <History className="h-4 w-4 shrink-0"/>
             {isSidebarOpen && <span className='ml-2'>Repeated Visitor</span>}
           </div> 
-          <div className={`h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors ${
+          <div className={`w-full h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors ${
             isSidebarOpen? 'px-3 justify-start' : 'justify-center p-0'
             }`}>
             <ClipboardList className="h-4 w-4 shrink-0"/>
             {isSidebarOpen && <span className='ml-2'>Pre-Scheduled Visits</span>}
           </div> 
           <div 
-            className={`h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors whitespace-nowrap ${
+            className={`w-full h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors whitespace-nowrap ${
               isSidebarOpen? 'px-3 justify-start' : 'justify-center p-0'
             }`}
             title='Settings & Preferences'>
@@ -107,11 +131,15 @@ export default function EmployeeDashboard() {
         
         {/* Top Header Navigation Panel */}
         <header className="h-16 bg-gray-900 border-b border-[#21262d] shrink-0 flex items-center justify-between px-6 z-10">
-          {/*Hamburger menu*/}
+          {/*DashPanel menu*/}
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="text-gray-400 hover:text-white p-1 rounded-md transition-colors cursor-pointer shrink-0">
-            <Menu className="h-5 w-5" />
+            className="text-gray-400 hover:text-white p-1 rounded-md transition-colors cursor-pointer shrink-0 ">
+              {
+              isSidebarOpen ? 
+                (<PanelLeft className="h-5 w-5" />)
+              : (<PanelRight className="h-5 w-5" />)
+            }
           </button>
           
           {/*Search Bar: max width so it doesn't crowd out right-side header items)*/}
@@ -132,7 +160,7 @@ export default function EmployeeDashboard() {
           </div>
 
           {/* ZONE 2 & 3: RIGHT SIDE PLACEHOLDER FOR NEXT STEP (FIXED: Container handles notification bell inside header alignment) */}
-          <div className="flex items-center gap-4 shrink-0">
+          <div className="flex relative items-center gap-4 shrink-0">
             {/*Notification Button */}
             <button 
               onClick={() => setShowNotifications(!showNotifications)}
@@ -145,7 +173,7 @@ export default function EmployeeDashboard() {
             </button>
 
             {showNotifications && (
-              <div className="absolute right-6 top-14 w-64 bg-gray-900 border border-gray-700 rounded-lg shadow-xl p-3 text-xs text-gray-300">
+              <div className="absolute right-0 top-11 z-50 w-64 bg-gray-900 border border-gray-700 rounded-lg shadow-xl p-3 text-xs text-gray-300">
                 Notification Panel Active
               </div>
             )}
@@ -163,7 +191,7 @@ export default function EmployeeDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
             {/*Action1: Add Visitor */}
-            <div className="bg-gray-900 border border-[#21262d] rounded-xl p-5 flex-col justify-between group cursor-pointer hover:bg-gray-800 transition-all">
+            <div className="bg-gray-900 border border-[#21262d] rounded-xl p-5 flex flex-col justify-between group cursor-pointer hover:bg-gray-800 transition-all">
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
                   <h3 className="text-base font-semibold text-gray-200 group-hover:text-amber-400 transition-colors">Register New Visitor</h3>
@@ -186,17 +214,23 @@ export default function EmployeeDashboard() {
                     <h3 className="text-base font-semibold text-gray-200 group-hover:text-blue-400 transition-colors">Dispatched Pass Log</h3>
                     <p className="text-xs text-gray-400 max-w-sm">Track your locally registered guest entires, monitor pending clearances, and confirm exists. </p>
                   </div>
-                  <div className="p-3 rounded-lg bg-blue-500/10 text-blue-400 shrink-0">
+                  <div 
+                    onClick={()=>navigate('/employee/dispatchedPassLog')}
+                    className="p-3 rounded-lg bg-blue-500/10 text-blue-400 shrink-0">
                     <ClipboardList className="h-5 w-5" />
                     <span className="text-lg font-semibold text-white">View Log</span>
                   </div>
                 </div>
-                <div className="mt-6 flex items-center text-xs font-semibold text-blue-500 gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                <div 
+                  onClick={()=>navigate('/employee/dispatchedPassLog')}
+                  className="mt-6 flex items-center text-xs font-semibold text-blue-500 gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                   <span>View Recent Dispatch</span>
                   <span>→</span>
                 </div>
               </div>
             </div>
+          
+
           {/*FT-2 Shift Activity Log Table*/}
           <div className="bg-gray-900 border border-[#21262d] rounded-xl overflow-hidden shadow-xl">
             

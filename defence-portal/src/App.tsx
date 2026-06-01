@@ -1,5 +1,6 @@
 import {Routes, Route, Navigate} from 'react-router-dom';
 import EmployeeDashboard from './pages/employee/EmployeeDashboard.tsx';
+import DispatchedPassLog from './pages/employee/DispatchedPassLog.tsx';
 
 //placeholder for HR n Security until we write their full code 
 const HRDashboard = () => (
@@ -21,8 +22,8 @@ function App(){
       <Routes>
         {/* 1.Employee Dashboard */}
         <Route path="/employee" element={<EmployeeDashboard />} />
-        {/* 2.HR Dashboard */}
-        <Route path="/hr" element={<HRDashboard />} />
+        {/* 2.Dispatched Pass Log */}
+        <Route path="/employee/dispatchedPassLog" element={<DispatchedPassLog />} />
         {/* 3.Security Dashboard */}
         <Route path="/security" element={<SecurityDashboard />} />
         {/* Redirect to employee dashboard as default */}

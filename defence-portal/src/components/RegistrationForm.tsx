@@ -205,7 +205,7 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
               {/* Purpose Input */}
               <div className="space-y-1.5">
                 <label className="block text-gray-300 font-medium">Purpose of Entry / Host Organization</label>
-                <input type="text" required placeholder="e.g. Meeting with the Team Lead" className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-gray-500 text-gray-200" />
+                <input type="text" required placeholder="e.g. Meeting with the Team Lead" value={purpose} onChange={(e) => setPurpose(e.target.value)} className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-gray-500 text-gray-200" />
               </div>
 
               {/* Linked Headcount Input box tracking changes dynamically */}

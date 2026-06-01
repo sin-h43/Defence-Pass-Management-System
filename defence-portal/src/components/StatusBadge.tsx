@@ -12,6 +12,8 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
                 return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
             case 'checked out':
                 return 'bg-gray-800 text-gray-400 border-transparent';
+            case 'revoked':
+                return 'bg-rose-500/10 text-rose-400 border-rose-500/20';
             default:
                 return 'bg-gray-800 text-gray-400 border-transparent';
         }
