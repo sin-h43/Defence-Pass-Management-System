@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Shield, X, UserCheck, FileText } from 'lucide-react';
+import { ArrowLeft, Shield, X, UserCheck, FileText, Search } from 'lucide-react';
+import StatusBadge from '../../components/StatusBadge';
+
 
 type PassRecord = {
   passId: string;
@@ -25,178 +27,243 @@ export default function DispatchedPassLog() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-6 relative">
-      
-      {/* Header Actions */}
-      <div className="flex items-center gap-4 mb-6">
-        <button 
-          onClick={() => navigate('/employee')} 
-          className="p-2 hover:bg-slate-900 rounded-lg text-slate-400 hover:text-white transition"
-        >
-          <ArrowLeft size={20} />
-        </button>
+    <div className =" bg-gray-950/50 min-h-screen p-6 relative" > {/*the entire card*/}
+      <div className='flex items-center gap-4 mt-3 mb-2 shadow-xl '> 
+        {/*Header section */}
+        <div className='bg-gray-800 border border-[#30363d] rounded-lg ml-3'>
+          {/*icon */}
+          <button onClick = {()=> navigate('/employee')}
+            className='p-1 hover:bg-slate-900 rounded-lg text-slate-400 hover:text-white transition'>
+            <ArrowLeft size={20} />
+          </button>
+        </div>
+        {/*Title section */}
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Master Dispatched Pass Log</h1>
-          <p className="text-xs text-slate-400">Complete historical system ledger database</p>
+          <h1 className='text-2xl text-white font-bold tracking-tight'>Master Dispatched Pass Log</h1>
+          <p className='text-xs text-white mb-1'>Comp</p>
         </div>
       </div>
+      <div className='px-6 mb-6' >
+        <div className = "relative max-w-lg">
+          <Search className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-400'/>
+          <input 
+            type='text'
+            placeholder='Query dispatch ledger'
+            className='w-full
+                            bg-[#0d1117]
+                            border border-[#30363d]
+                            rounded-lg
+                            pl-10
+                            pr-4
+                            py-2.5
+                            text-sm
+                            text-gray-200
+                            placeholder:text-gray-500
+                            focus:outline-none
+                            focus:border-blue-500'
+            />
 
-      {/* Master Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-xl">
-        <table className="w-full text-left border-collapse">
+        </div>
+
+      </div>
+      
+      <div className='bg-slate-900 border border-slate-800 rounded-xl shadow-xl overflow-x-auto'>
+        {/*table */}
+        <table className='w-full text-left border-collapse'>
           <thead>
-            <tr className="bg-slate-950/60 border-b border-slate-800 text-xs font-semibold uppercase text-slate-400 tracking-wider">
-              <th className="p-4">Pass ID</th>
-              <th className="p-4">Holder Name</th>
-              <th className="p-4">Clearance</th>
-              <th className="p-4">Escorted Manifest</th>
-              <th className="p-4">Status</th>
+            <tr className='bg-slate-950/60 border-b border-slate-800 text-xs font-semibold uppcase text-slate-400 tracking-wide '>
+              <th className='p-4'>Pass ID</th>
+              <th className='p-4'>Holder Name</th>
+              <th className='p-4'>Clearance</th>
+              <th className='p-4'>Escorted Manifest</th>
+              <th className='p-4'>Status</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800/50 text-sm">
-            {masterPassHistory.map((row) => (
+          <tbody className='divide-y divide-slate-800/50 text-sm'>
+            {masterPassHistory.map((pass)=>(
               <tr 
-                key={row.passId} 
-                onClick={() => setSelectedPass(row)}
-                className="hover:bg-slate-800/60 cursor-pointer transition-colors group"
-              >
-                <td className="p-4 font-mono font-medium text-blue-400 group-hover:underline">{row.passId}</td>
-                <td className="p-4 font-medium">{row.holderName}</td>
-                <td className="p-4">
-                  <span className={`px-2 py-0.5 rounded text-xs border ${
-                    row.clearanceLevel === 'Level 3' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
-                  }`}>
-                    {row.clearanceLevel}
-                  </span>
+                key={pass.passId}
+                onClick={()=> setSelectedPass(pass)}
+                className='hover:bg-slate-800/60 cursor-pointor transition-colors gorup'>
+                <td className = "p-4 font-mono font-medium text-blue-400 group-hover:underline">{pass.passId}</td>
+                <td className = "p-4 font-medium">{pass.holderName}</td>
+                <td className='p-4 font-medium'>{pass.escortedManifest }</td>
+                <td className='p-4'>
+                  <StatusBadge status={pass.clearanceLevel} />
                 </td>
-                <td className="p-4 text-slate-400">{row.escortedManifest}</td>
-                <td className="p-4">
-                  <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    row.liveStatus === 'Active' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-slate-800 text-slate-400'
-                  }`}>
-                    {row.liveStatus}
-                  </span>
+                <td className='p-4'>
+                  <StatusBadge status={pass.liveStatus} />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-      </div>
+        {selectedPass && (
+  <>
+    {/* Background Overlay */}
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+      onClick={() => setSelectedPass(null)}
+    />
 
-      {/* --- THE MIDDLE DRAWER OVERLAY --- */}
-      {selectedPass && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
-          <div className="w-full max-w-4xl h-[80vh] bg-slate-900 border border-slate-800 rounded-xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-150">
-            
-            {/* Modal Header */}
-            <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-950/40">
-              <div className="flex items-center gap-3">
-                <Shield className="text-blue-500" size={24} />
-                <div>
-                  <h2 className="text-lg font-mono font-bold text-slate-200">{selectedPass.passId}</h2>
-                  <p className="text-xs text-slate-400">Security Entry Dossier</p>
+    {/* Center Modal */}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blue-sm bg-black/75">
+      <div
+        className="w-full max-w-5xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+          <div>
+            <h2 className="text-lg font-semibold text-white">
+              Visitor Record
+            </h2>
+            <p className="text-xs text-slate-400">
+              Complete Dispatch Ledger Entry
+            </p>
+          </div>
+
+          <button
+            onClick={() => setSelectedPass(null)}
+            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition"
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="grid md:grid-cols-2">
+
+          {/* LEFT PANEL */}
+          <div className="p-6 space-y-5">
+
+            <div>
+              <p className="text-xs uppercase tracking-wide text-slate-500">
+                Pass ID
+              </p>
+              <p className="text-white font-mono mt-1">
+                {selectedPass.passId}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-wide text-slate-500">
+                Holder Name
+              </p>
+              <p className="text-white mt-1">
+                {selectedPass.holderName}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-wide text-slate-500">
+                Clearance Level
+              </p>
+              <div className="mt-1">
+                <StatusBadge status={selectedPass.clearanceLevel} />
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-wide text-slate-500">
+                Live Status
+              </p>
+              <div className="mt-1">
+                <StatusBadge status={selectedPass.liveStatus} />
+              </div>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-wide text-slate-500">
+                Escorted Manifest
+              </p>
+              <p className="text-white mt-1">
+                {selectedPass.escortedManifest}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-wide text-slate-500">
+                Purpose of Visit
+              </p>
+              <p className="text-white mt-1">
+                {selectedPass.purpose}
+              </p>
+            </div>
+
+            <div>
+              <p className="text-xs uppercase tracking-wide text-slate-500">
+                Expiration Date
+              </p>
+              <p className="text-white mt-1">
+                {selectedPass.expiration}
+              </p>
+            </div>
+
+            {/* Example Aadhaar Section */}
+            <div className="border border-slate-800 rounded-xl p-4 bg-slate-950/50">
+              <h4 className="text-sm font-medium text-white mb-3">
+                Identity Verification
+              </h4>
+
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Document Type</span>
+                  <span className="text-white">Aadhaar Card</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Verification</span>
+                  <span className="text-emerald-400">Verified</span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Encryption</span>
+                  <span className="text-blue-400">AES-256 Stored</span>
                 </div>
               </div>
-              <button 
-                onClick={() => { setSelectedPass(null); setIsEditing(false); }}
-                className="p-1.5 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition"
-              >
-                <X size={20} />
+            </div>
+          </div>
+
+          {/* RIGHT PANEL */}
+          <div className="border-l border-slate-800 p-6">
+
+            <h3 className="text-sm font-medium text-white mb-4">
+              Uploaded Verification File
+            </h3>
+
+            <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-950">
+              <img
+                src={selectedPass.fileUrl}
+                alt="Verification Document"
+                className="w-full h-[420px] object-cover"
+              />
+
+              <div className="p-3 border-t border-slate-800">
+                <p className="text-xs text-slate-400">
+                  Encrypted document preview stored in the dispatch ledger.
+                </p>
+              </div>
+            </div>
+
+            {/* Optional Actions */}
+            <div className="flex gap-3 mt-4">
+              <button className="px-4 py-2 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400 text-sm hover:bg-blue-500/20 transition">
+                View Full File
               </button>
-            </div>
 
-            {/* Modal Content Split Grid */}
-            <div className="flex-1 overflow-y-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-              
-              {/* Left Column: Data Form fields */}
-              <div className="space-y-4">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">Personnel Diagnostics</h3>
-                
-                <div className="space-y-3 bg-slate-950/40 p-4 rounded-lg border border-slate-800">
-                  <div>
-                    <label className="text-xs text-slate-500 block">Full Name</label>
-                    <input 
-                      type="text" 
-                      disabled={!isEditing}
-                      defaultValue={selectedPass.holderName} 
-                      className="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 mt-1 text-sm disabled:opacity-70 focus:border-blue-500 outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="text-xs text-slate-500 block">Purpose of Entry</label>
-                    <textarea 
-                      disabled={!isEditing}
-                      defaultValue={selectedPass.purpose} 
-                      rows={2}
-                      className="w-full bg-slate-900 border border-slate-700 rounded px-2.5 py-1.5 mt-1 text-sm disabled:opacity-70 focus:border-blue-500 outline-none resize-none"
-                    />
-                  </div>
-                </div>
-
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">Accompanied Escort Details</h3>
-                <div className="bg-slate-950/40 p-4 rounded-lg border border-slate-800 flex items-center gap-3">
-                  <UserCheck className="text-blue-400" size={20} />
-                  <div>
-                    <p className="text-sm font-medium">{selectedPass.escortedManifest}</p>
-                    <p className="text-xs text-slate-500">Personnel cleared under primary handler accountability</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Column: Embedded Verification Image */}
-              <div className="flex flex-col space-y-3">
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-400">Loaded Credential Verification</h3>
-                
-                <div className="flex-1 min-h-[280px] bg-slate-950 rounded-lg border border-slate-800 overflow-hidden flex flex-col items-center justify-center p-2 bg-checkerboard">
-                  {/* Active Document Frame */}
-                  <img 
-                    src={selectedPass.fileUrl} 
-                    alt="Credential verification payload" 
-                    className="max-w-full max-h-[260px] object-contain rounded border border-slate-800 shadow"
-                  />
-                  <div className="w-full mt-2 flex items-center justify-between px-2">
-                    <span className="text-[11px] font-mono text-slate-500 flex items-center gap-1">
-                      <FileText size={12} /> hardware_clearance_payload.jpg
-                    </span>
-                    <button className="text-[11px] text-blue-400 hover:underline">View Raw</button>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Modal Footer Controls */}
-            <div className="p-4 border-t border-slate-800 bg-slate-950/40 flex justify-end gap-2">
-              {isEditing ? (
-                <>
-                  <button 
-                    onClick={() => setIsEditing(false)} 
-                    className="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-medium rounded transition"
-                  >
-                    Cancel
-                  </button>
-                  <button 
-                    onClick={() => setIsEditing(false)} 
-                    className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-xs font-medium rounded text-white transition"
-                  >
-                    Save Modifications
-                  </button>
-                </>
-              ) : (
-                <button 
-                  onClick={() => setIsEditing(true)} 
-                  className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-xs font-medium rounded transition"
-                >
-                  Edit Request Parameters
-                </button>
-              )}
+              <button className="px-4 py-2 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm hover:bg-amber-500/20 transition">
+                Audit Record
+              </button>
             </div>
 
           </div>
         </div>
-      )}
-
+      </div>
+    </div>
+  </>
+)}
+      </div>
     </div>
   );
 

@@ -14,6 +14,15 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
                 return 'bg-gray-800 text-gray-400 border-transparent';
             case 'revoked':
                 return 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+
+            //Security Clearance Levels
+            case 'level 1':
+                return 'bg-sky-500/10 text-sky-400 border-sky-500/20';
+            case 'level 2':
+                return 'bg-violet-500/10 text-violet-400 border-violet-500/20';
+            case 'level 3':
+                return 'bg-red-500/10 text-red-400 border-red-500/20';
+                
             default:
                 return 'bg-gray-800 text-gray-400 border-transparent';
         }
