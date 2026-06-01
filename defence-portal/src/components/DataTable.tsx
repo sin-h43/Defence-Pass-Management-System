@@ -5,7 +5,6 @@ interface DataTableProps {
     rows: Array<{ 
         id: string;
         name: string;
-        email: string;
         purpose: string;
         time: string;
         type: string;

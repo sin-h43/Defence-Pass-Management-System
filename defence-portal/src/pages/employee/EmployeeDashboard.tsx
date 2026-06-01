@@ -1,5 +1,6 @@
 import { Search, Menu, Bell, ClipboardList, Settings, Shield, History, UserPlus, ChevronDown, LogOut, Users } from 'lucide-react';
 import { useRef, useState } from 'react';
+import DataTable from '../../components/DataTable';
 
 export default function EmployeeDashboard() {
 
@@ -20,26 +21,33 @@ export default function EmployeeDashboard() {
   //FT-8 Persistent state to store typed escort details
   const [escortList, setEscortList] = useState<{ name: string; idRef: string }[]>([]);
 
+  //FT-9 reusable datatable
+  const activityHeaders = ["Pass ID", "Visitor Name", "Purpose / Agency", "Check-In Time", "Visitor Type", "Pass Status"];
+  const activityRows = [
+    { id: "DEF-9402", name: "Rajesh Kumar", purpose: "CPWD Maintenance", time: "02:15 PM", type: "New Visitor/Urgent Access", status: "Checked In" },
+    { id: "DEF-8831", name: "Dr. Sunita Sharma", purpose: "DRDO Technical Review", time: "01:40 PM", type: "Pre-Scheduled Clearance", status: "Pending Clearance" },
+    { id: "DEF-7110", name: "Amit Patel", purpose: "Logistics Delivery", time: "11:05 AM", type: "Repeated Visitor", status: "Checked Out" }
+  ];
+
   const handleHeadCountChange = (newCount: number) => {
-    if(isNaN(newCount)) return;
+    if (isNaN(newCount)) return;
     setHeadCount(newCount);
 
-    if(newCount === 0) return;
+    if (newCount === 0) return;
 
     const targetCount = Math.max(0, newCount);
-    
 
-    setEscortList((prevList)=>{
-      if(prevList.length < targetCount){
-        //scalling UP, append empty objs == target count
+    setEscortList((prevList) => {
+      if (prevList.length < targetCount) {
+        //scaling UP, append empty objs == target count
         const shortBy = targetCount - prevList.length;
-        const extension = Array.from({length: shortBy}, ()=>({name:'', idRef:''}));
-      return [...prevList, ...extension];
-      }else if (targetCount < prevList.length){
+        const extension = Array.from({ length: shortBy }, () => ({ name: '', idRef: '' }));
+        return [...prevList, ...extension];
+      } else if (targetCount < prevList.length) {
         //scaling DOWN, trim the list to target count
-      return prevList.slice(0, targetCount);
+        return prevList.slice(0, targetCount);
       }
-    return prevList;
+      return prevList;
     });
   };
   //FT 9 Handler functions to update the escort details in state on input change
@@ -239,64 +247,7 @@ export default function EmployeeDashboard() {
             </div>
 
             {/* The Responsive Table Element */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="border-b border-[#21262d] bg-gray-800/20 text-gray-400 font-medium select-none">
-                    <th className="p-3.5">Pass ID</th>
-                    <th className="p-3.5">Visitor Name</th>
-                    <th className="p-3.5">Purpose / Agency</th>
-                    <th className="p-3.5">Check-In Time</th>
-                    <th className="p-3.5">Visitor Type</th>
-                    <th className="p-3.5 text-right">Pass Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#21262d] text-gray-300">
-                  
-                  {/* Row 1 */}
-                  <tr className="hover:bg-[#161b22]/20 transition-colors">
-                    <td className="p-3.5 font-mono text-amber-500 font-medium">DEF-9402</td>
-                    <td className="p-3.5 font-medium text-gray-200">Rajesh Kumar</td>
-                    <td className="p-3.5 text-gray-400">CPWD Maintenance</td>
-                    <td className="p-3.5 text-gray-500">02:15 PM</td>
-                    <td className="p-3.5 text-gray-400">New Visitor/Urgent Access</td> 
-                    <td className="p-3.5 text-right">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/10">
-                        Checked In
-                      </span>
-                    </td>
-                  </tr>
-
-                  {/* Row 2 */}
-                  <tr className="hover:bg-[#161b22]/20 transition-colors">
-                    <td className="p-3.5 font-mono text-amber-500 font-medium">DEF-8831</td>
-                    <td className="p-3.5 font-medium text-gray-200">Dr. Sunita Sharma</td>
-                    <td className="p-3.5 text-gray-400">DRDO Technical Review</td>
-                    <td className="p-3.5 text-gray-500">01:40 PM</td>
-                    <td className="p-3.5 text-gray-400">Pre-Scheduled Clearance</td>
-                    <td className="p-3.5 text-right">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/10">
-                        Pending Clearance
-                      </span>
-                    </td>
-                  </tr>
-
-                  {/* Row 3 */}
-                  <tr className="hover:bg-[#161b22]/20 transition-colors">
-                    <td className="p-3.5 font-mono text-amber-500 font-medium">DEF-7110</td>
-                    <td className="p-3.5 font-medium text-gray-200">Amit Patel</td>
-                    <td className="p-3.5 text-gray-400">Logistics Delivery</td>
-                    <td className="p-3.5 text-gray-500">11:05 AM</td>
-                    <td className="p-3.5 text-gray-400">Repeated Visitor</td>
-                    <td className="p-3.5 text-right">
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-gray-800 text-gray-400">
-                        Checked Out
-                      </span>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <DataTable headers={activityHeaders} rows={activityRows} />
           </div>
           {/*Inline form Wrapper */}
           <div 
