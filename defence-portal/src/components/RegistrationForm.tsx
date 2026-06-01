@@ -3,10 +3,10 @@ import {UserPlus, ChevronDown, Users} from "lucide-react";
 
 interface RegistrationFormProps {
     showHRFeatures? : boolean;
-    onSubmit: (formData: any) => void;
+    onSubmitSuccess: (formData: any) => void;
 }
 
-export default function RegistrationForm({ showHRFeatures = false, onSubmit }: RegistrationFormProps) {
+export default function RegistrationForm({ showHRFeatures = false, onSubmitSuccess }: RegistrationFormProps) {
     //FT-3 state to control opening. closing the registration form
   const [visitorCategory, setVisitorCategory] = useState('new');
   //State to track which clearance level button is selected inside the form
@@ -48,8 +48,8 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmit }: R
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     alert('Form submitted successfully!');
-    if(onSubmit){
-      onSubmit({visitorCategory, clearanceLevel, headCount, escortList});
+    if(onSubmitSuccess){
+      onSubmitSuccess({visitorCategory, clearanceLevel, headCount, escortList});
     }
   };
 

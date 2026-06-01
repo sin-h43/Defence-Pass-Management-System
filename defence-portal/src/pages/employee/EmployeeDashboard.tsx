@@ -17,11 +17,11 @@ export default function EmployeeDashboard() {
   
   //FT-9 reusable datatable
   const activityHeaders = ["Pass ID", "Visitor Name", "Purpose / Agency", "Check-In Time", "Visitor Type", "Pass Status"];
-  const activityRows = [
+  const [activityRows, setActivityRows] = useState([
     { id: "DEF-9402", name: "Rajesh Kumar", purpose: "CPWD Maintenance", time: "02:15 PM", type: "New Visitor/Urgent Access", status: "Checked In" },
     { id: "DEF-8831", name: "Dr. Sunita Sharma", purpose: "DRDO Technical Review", time: "01:40 PM", type: "Pre-Scheduled Clearance", status: "Pending Clearance" },
     { id: "DEF-7110", name: "Amit Patel", purpose: "Logistics Delivery", time: "11:05 AM", type: "Repeated Visitor", status: "Checked Out" }
-  ];
+  ]);
  
   return (
     // outer container (FIXED: Corrected typo 'oveflow-hidden' to 'overflow-hidden')
@@ -221,7 +221,25 @@ export default function EmployeeDashboard() {
           {/* Inline Form Wrapper */}
           <div ref={registrationFormRef} className="scroll-mt-6">
             {/* Render our highly scalable and reusable component */}
-            <RegistrationForm showHRFeatures={false} onSubmit={(data) => console.log(data)} />
+            <RegistrationForm 
+              showHRFeatures={false}
+              onSubmitSuccess={(newVisitorData) => {
+                const generatedId = `DEF-${Math.floor(1000 + Math.random() * 9000)}`;
+                
+                // Format new row to match the datatable structure
+                const newRow = {
+                  id: generatedId,
+                  name: newVisitorData.name || "Unknown Visitor",
+                  purpose: newVisitorData.purpose || "General Visit",
+                  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                  type: newVisitorData.visitorType === "hr" ? "HR-Related Visit" : "New Visitor/Urgent Access",
+                  status: "Pending Clearance"
+                };
+
+                // Append the new row to the existing table data 
+                setActivityRows(prevRows => [newRow, ...prevRows]);
+              }} 
+            />
           </div>
             
         </main>
