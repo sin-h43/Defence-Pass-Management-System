@@ -120,7 +120,7 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
   };
 
   const detectedGovtIdType = (value:string) => {
-    const cleaned = value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase;
+    const cleaned = value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase();
     const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
     const aadhrRegex = /^[0-9]{12}$/;
 
@@ -206,7 +206,18 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                     maxLength={12} 
                     value={idRef}
                     // Strips spaces, hyphens, and symbols so they don't eat into your max length limit
-                    onChange={(e) => setIdRef(e.target.value.replace(/[^a-zA-Z0-9]/g, ''))}
+                    onChange={(e) => {
+                      const {value, idType} = detectedGovtIdType(e.target.value);
+                      setIdRef(value);
+                      setIdType(idType);
+                    }}
+                    onBlur={()=>{
+                      if(idType === 'Incomplete / Invalid'){
+                        alert('Invalid ID Format! Please enter a valid 12-Digit Aadhaar or alpha-numeric PAN.')
+                        setIdRef('');
+                        setIdType('');
+                      }
+                    }}
                     placeholder="12-Digit Aadhaar / Alpha-Numeric PAN"
                     className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500 text-gray-200 focus:bg-[#12161d]"
                 />
@@ -286,14 +297,28 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                           <label className="block text-gray-500 font-medium pt-0.5 sm:pt-0 pl-0 sm:pl-5">
                             Member Aadhaar / Govt ID Num
                           </label>
-                          <input 
-                            type="text" 
-                            required 
-                            value={escort.idRef}
-                            onChange={(e) => updateEscortField(index, 'idRef',e.target.value.replace(/[^a-zA-Z0-9]/g, ''))}
-                            placeholder="12-Digit Aadhaar / PAN" 
-                            className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-1.5 text-gray-200 placeholder-gray-700 focus:outline-none focus:border-gray-600 focus:bg-[#12161d] transition-all" 
-                          />
+                          <input
+                    type="text"
+                    required
+                    // Pinned maximum limit directly on the DOM element wrapper
+                    maxLength={12} 
+                    value={idRef}
+                    // Strips spaces, hyphens, and symbols so they don't eat into your max length limit
+                    onChange={(e) => {
+                      const {value, idType} = detectedGovtIdType(e.target.value);
+                      setIdRef(value);
+                      setIdType(idType);
+                    }}
+                    onBlur={()=>{
+                      if(idType === 'Incomplete / Invalid'){
+                        alert('Invalid ID Format! Please enter a valid 12-Digit Aadhaar or alpha-numeric PAN.')
+                        setIdRef('');
+                        setIdType('');
+                      }
+                    }}
+                    placeholder="12-Digit Aadhaar / Alpha-Numeric PAN"
+                    className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500 text-gray-200 focus:bg-[#12161d]"
+                />
                         </div>
                       </div>
                     ))}
