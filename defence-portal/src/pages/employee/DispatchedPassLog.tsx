@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, X, Search } from 'lucide-react';
 import StatusBadge from '../../components/StatusBadge';
@@ -25,7 +25,13 @@ export default function DispatchedPassLog() {
   const navigate = useNavigate();
   const [selectedPass, setSelectedPass] = useState<PassRecord | null>(null);
   // Simulated data
-  const masterPassHistory = getStoredPasses();
+  const [masterPassHistory, setMasterPassHistory ] = useState<PassRecord[]>(()=>
+  {return getStoredPasses();});
+
+  //sync the fresh strg ledger onto the screen on load
+  useEffect(()=>{
+    setMasterPassHistory(getStoredPasses());
+  },[])
 
 
   return (
@@ -129,60 +135,85 @@ export default function DispatchedPassLog() {
         <div className="grid md:grid-cols-2">
 
           {/* LEFT PANEL */}
-          <div className="p-6 space-y-5">
+          <div className="p-6 space-y-6 overflow-y-auto max-h-[calc(85vh-70px)]">
 
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-xs uppercase tracking-wide text-slate-500">
-                Pass ID
-              </p>
-              <p className="text-white font-mono mt-1">
-                {selectedPass.passId}
-              </p>
+              <label className="block text-xs uppercase tracking-wider text-gray-500 font-mono">Pass ID</label>
+              <p className="text-orange-400 font-mono font-bold text-sm">{selectedPass.passId || selectedPass.id}</p>
+            </div>
+            <div>
+              <label className="block text-xs uppercase tracking-wider text-gray-500">Live Status</label>
+              <span className="inline-block mt-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-yellow-950/50 text-yellow-400 border border-yellow-800">
+                {selectedPass.liveStatus}
+              </span>
+            </div>
+          </div>
+
+          <div className="space-y-3 grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs uppercase tracking-wider text-gray-500">Holder Name</label>
+              <p className="text-gray-200 font-medium text-base">{selectedPass.holderName}</p>
+            </div>
+            <div>
+              <label className="block text-xs uppercase tracking-wider text-gray-500">Date of Birth</label>
+              <p className="text-gray-300 text-sm font-mono">{selectedPass.dob}</p>
+            </div>
+            <div>
+              <label className="block text-xs uppercase tracking-wider text-gray-500">Email Address</label>
+              <p className="text-gray-300 text-sm font-mono">{selectedPass.email}</p>
+            </div>
+            <div>
+              <label className="block text-xs uppercase tracking-wider text-gray-500">{selectedPass.idType}</label>
+              <p className="text-gray-300 text-sm font-mono">{selectedPass.isRef}</p>
             </div>
 
-            <div>
-              <p className="text-xs uppercase tracking-wide text-slate-500">
-                Holder Name
-              </p>
-              <p className="text-white mt-1">
-                {selectedPass.holderName}
-              </p>
-            </div>
+          </div>
 
+          <div className="grid grid-cols-2 gap-4 border-t border-gray-800/60 pt-4">
             <div>
-              <p className="text-xs uppercase tracking-wide text-slate-500">
-                Clearance Level
-              </p>
-              <div className="mt-1">
-                <StatusBadge status={selectedPass.clearanceLevel} />
-              </div>
+              <label className="block text-xs uppercase tracking-wider text-gray-500">Clearance Level</label>
+              <span className="inline-block mt-1 px-2 py-0.5 rounded text-xs font-semibold border border-emerald-800 text-emerald-400 bg-emerald-950/20">
+                {selectedPass.clearanceLevel || 'Level 1'}
+              </span>
             </div>
-
             <div>
-              <p className="text-xs uppercase tracking-wide text-slate-500">
-                Live Status
-              </p>
-              <div className="mt-1">
-                <StatusBadge status={selectedPass.liveStatus} />
-              </div>
+              <label className="block text-xs uppercase tracking-wider text-gray-500">Purpose of Visit</label>
+              <p className="text-gray-300 text-sm mt-1">{selectedPass.purpose || 'General Visit'}</p>
             </div>
+          </div>
 
-            <div>
-              <p className="text-xs uppercase tracking-wide text-slate-500">
-                Escorted Manifest
-              </p>
-              <p className="text-white mt-1">
-                {selectedPass.escortedManifest}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-xs uppercase tracking-wide text-slate-500">
-                Purpose of Visit
-              </p>
-              <p className="text-white mt-1">
-                {selectedPass.purpose}
-              </p>
+            <div className='border-t border-gray-800/60 pt-4'>
+              <label className='block text-xs uppercase tracking-wider text-gray-500 mb-2'>
+                Escorted Manifest Details
+              </label>
+              <p className='text-gray-400 text-xs mb-2 font-mono'>{selectedPass.escortedManifest}</p>
+              {selectedPass.escortList && selectedPass.escortList.length > 0 ? (
+                <div className='space-y-2 max-h-48 overflow-y-auto pr-1'>
+                  {selectedPass.escortList.map((escort:any,index:number)=>(
+                    <div 
+                      key={index}
+                      className='p-2.5 bg-[#0d1117] border border-[#21262d] rounded-lg text-xs flex justify-between items-center'
+                    >
+                      <div>
+                        <p className="text-gray-200 font-medium">
+                          {escort.name || `Escort #${index + 1}`}
+                        </p>
+                        <p className="text-gray-500 font-mono text-[10px]">
+                          {escort.idRef}
+                        </p>
+                        <span className="px-1.5 py-0.5 rounded bg-gray-900 border border-gray-800 text-gray-400 text-[10px] font-mono">
+                          {escort.idType || 'ID'}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ):(
+                  <p className="text-gray-600 text-xs italic bg-[#0d1117]/30 p-2 rounded border border-dashed border-gray-800">
+                    No secondary escorted escorts bound to this deployment clearance pass.
+                  </p>
+              )}
             </div>
 
             <div>
@@ -203,7 +234,7 @@ export default function DispatchedPassLog() {
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-slate-400">Document Type</span>
-                  <span className="text-white">Aadhaar Card</span>
+                  <span className="text-white font-mono">{selectedPass.idType && selectedPass.idType.trim() ? `${selectedPass.idType} Card` : 'Verified Gov ID'}</span>
                 </div>
 
                 <div className="flex justify-between">

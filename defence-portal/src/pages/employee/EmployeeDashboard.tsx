@@ -280,8 +280,13 @@ export default function EmployeeDashboard() {
                   passId : generatedId,
                   holderName :newVisitorData.name || "Unknown Visitor",
                   purpose: newVisitorData.purpose || "General Visit",
+                  email: newVisitorData.email || " ",
+                  dob: newVisitorData.dob || " ",
+                  idVRef:newVisitorData.idRef || " ",
+                  idVType: newVisitorData.idType || " ",
                   visitorCategory :newVisitorData.visitorCategory || "urgent",
                   clearanceLevel: newVisitorData.clearanceLevel || "Level 1",
+                  escortList:newVisitorData.escortList || [],
                   escortedManifest:newVisitorData.headCount>0 ? `+${newVisitorData.headCount} Escorted` : "None (Solo)",
                   type: newVisitorData.visitorType === "hr" ? "HR-Related Visit" : "New Visitor/Urgent Access",
                   liveStatus: newVisitorData.visitorCategory === "scheduled"

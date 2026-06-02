@@ -6,16 +6,23 @@ interface RegistrationFormProps {
     onSubmitSuccess: (formData: any) => void;
 }
 
+interface EscortMember {
+  name: string;
+  idRef: string;
+  idType: string;
+}
+
 export default function RegistrationForm({ showHRFeatures = false, onSubmitSuccess }: RegistrationFormProps) {
 
     //primary Form state trackers
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [dob, setDob] = useState('');
-    const [idRef, setIdRef] = useState('');
+    const [idVRef, setIdVRef] = useState('');
     const [address, setAddress] = useState('');
     const [purpose, setPurpose] = useState('');
-    const [idType, setIdType] = useState(' ');
+    const [idVType, setIdVType] = useState(' ');
+    const [escortList, setEscortList] = useState<EscortMember[]>([]);
 
     //FT-3 state to control opening. closing the registration form
     const [visitorCategory, setVisitorCategory] = useState('new');
@@ -23,8 +30,6 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
     const [clearanceLevel, setClearanceLevel] = useState<string | null>(null);
     //FT-7 state to track the number of accompanying guests
     const [headCount, setHeadCount] = useState(0);
-    //FT-8 Persistent state to store typed escort details
-    const [escortList, setEscortList] = useState<{ name: string; idRef: string }[]>([]);
 
 //drag n drop state elements
     const [isDragging, setIsDragging] = useState(false);
@@ -42,7 +47,7 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
       if (prevList.length < targetCount) {
         //scaling UP, append empty objs == target count
         const shortBy = targetCount - prevList.length;
-        const extension = Array.from({ length: shortBy }, () => ({ name: '', idRef: '' }));
+        const extension = Array.from({ length: shortBy }, () => ({ name: '', idRef: '' , idType: ''}));
         return [...prevList, ...extension];
       } else if (targetCount < prevList.length) {
         //scaling DOWN, trim the list to target count
@@ -52,7 +57,7 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
     });
   };
   //FT 9 Handler functions to update the escort details in state on input change
-  const updateEscortField = (index: number, field: 'name' | 'idRef', value: string) => {
+  const updateEscortField = (index: number, field: 'name' | 'idRef' | 'idType', value:string ) => {
     setEscortList((prevList) => {
       const updated = [...prevList];
       updated[index] = { ...updated[index], [field]: value };
@@ -73,20 +78,22 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
         name,
         email,
         dob,
-        idRef,
+        idVRef,
+        idVType,
         address,
         purpose,
         visitorCategory,
         clearanceLevel,
-        headCount,
-        escortList,
+        headCount:escortList.length,
+        escortList: escortList,
         fileName: uploadedFile.name,
         requestedDate: new Date()
     });
     setName('');
     setEmail('');
     setDob('');
-    setIdRef('');
+    setIdVRef('');
+    setIdVType('');
     setAddress('');
     setPurpose('');
     setHeadCount(0);
@@ -218,18 +225,18 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                     required
                     // Pinned maximum limit directly on the DOM element wrapper
                     maxLength={12} 
-                    value={idRef}
+                    value={idVRef}
                     // Strips spaces, hyphens, and symbols so they don't eat into your max length limit
                     onChange={(e) => {
-                      const {value, idType} = detectedGovtIdType(e.target.value);
-                      setIdRef(value);
-                      setIdType(idType);
+                      const {value, idVType} = detectedGovtIdType(e.target.value);
+                      setIdVRef(value);
+                      setIdVType(idVType);
                     }}
                     onBlur={()=>{
-                      if(idType === 'Incomplete / Invalid'){
+                      if(idVType === 'Incomplete / Invalid'){
                         alert('Invalid ID Format! Please enter a valid 12-Digit Aadhaar or alpha-numeric PAN.')
-                        setIdRef('');
-                        setIdType('');
+                        setIdVRef('');
+                        setIdVType('');
                       }
                     }}
                     placeholder="12-Digit Aadhaar / Alpha-Numeric PAN"
@@ -300,7 +307,7 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                           <input 
                             type="text"
                             required 
-                            value={escort.name}
+                            value={escort.name || ''}
                             onChange={(e) => updateEscortField(index, 'name',e.target.value)}
                             placeholder="e.g. Rahul Sharma"
                             className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-1.5 focus:outline-none focus:border-gray-600 text-gray-200 focus:bg-[#12161d]  transition-all"
@@ -313,27 +320,27 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                             Member Aadhaar / Govt ID Num
                           </label>
                           <input
-                    type="text"
-                    required
-                    // Pinned maximum limit directly on the DOM element wrapper
-                    maxLength={12} 
-                    value={idRef}
-                    // Strips spaces, hyphens, and symbols so they don't eat into your max length limit
-                    onChange={(e) => {
-                      const {value, idType} = detectedGovtIdType(e.target.value);
-                      setIdRef(value);
-                      setIdType(idType);
-                    }}
-                    onBlur={()=>{
-                      if(idType === 'Incomplete / Invalid'){
-                        alert('Invalid ID Format! Please enter a valid 12-Digit Aadhaar or alpha-numeric PAN.')
-                        setIdRef('');
-                        setIdType('');
-                      }
-                    }}
-                    placeholder="12-Digit Aadhaar / Alpha-Numeric PAN"
-                    className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500 text-gray-200 focus:bg-[#12161d]"
-                />
+                            type="text"
+                            required
+                            // Pinned maximum limit directly on the DOM element wrapper
+                            maxLength={12} 
+                            value={escort.idRef || '' }
+                            // Strips spaces, hyphens, and symbols so they don't eat into your max length limit
+                            onChange={(e) => {
+                              const {value, idType} = detectedGovtIdType(e.target.value);
+                              updateEscortField(index, 'idRef', value);
+                              updateEscortField(index, 'idType',idType)
+                            }}
+                            onBlur={()=>{
+                              if(escort.idType === 'Incomplete / Invalid'){
+                                alert('Invalid ID Format! Please enter a valid 12-Digit Aadhaar or alpha-numeric PAN.')
+                              updateEscortField(index, 'idRef', '');
+                              updateEscortField(index, 'idType','')
+                              }
+                            }}
+                            placeholder="12-Digit Aadhaar / Alpha-Numeric PAN"
+                            className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500 text-gray-200 focus:bg-[#12161d]"
+                          />
                         </div>
                       </div>
                     ))}
