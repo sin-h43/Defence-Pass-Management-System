@@ -15,15 +15,16 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
     const [idRef, setIdRef] = useState('');
     const [address, setAddress] = useState('');
     const [purpose, setPurpose] = useState('');
+    const [idType, setIdType] = useState(' ');
 
     //FT-3 state to control opening. closing the registration form
-  const [visitorCategory, setVisitorCategory] = useState('new');
-  //State to track which clearance level button is selected inside the form
-  const [clearanceLevel, setClearanceLevel] = useState<string | null>(null);
-  //FT-7 state to track the number of accompanying guests
-  const [headCount, setHeadCount] = useState(0);
-  //FT-8 Persistent state to store typed escort details
-  const [escortList, setEscortList] = useState<{ name: string; idRef: string }[]>([]);
+    const [visitorCategory, setVisitorCategory] = useState('new');
+    //State to track which clearance level button is selected inside the form
+    const [clearanceLevel, setClearanceLevel] = useState<string | null>(null);
+    //FT-7 state to track the number of accompanying guests
+    const [headCount, setHeadCount] = useState(0);
+    //FT-8 Persistent state to store typed escort details
+    const [escortList, setEscortList] = useState<{ name: string; idRef: string }[]>([]);
 
 //drag n drop state elements
     const [isDragging, setIsDragging] = useState(false);
@@ -116,7 +117,21 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
     if (e.target.files && e.target.files[0]) {
         processSingleFile(e.target.files);
     }
-};
+  };
+
+  const detectedGovtIdType = (value:string) => {
+    const cleaned = value.replace(/[^a-zA-Z0-9]/g,'').toUpperCase;
+    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+    const aadhrRegex = /^[0-9]{12}$/;
+
+    let idType = " ";
+    if(aadhrRegex.test(cleaned)){ idType = "Aadhar";}
+    else if (panRegex.test(cleaned)){ idType = "PAN";}
+    else if (cleaned.length>0){ idType = "Incomplete / Invalid"}
+
+    return {value: cleaned, idType};
+  };
+
   return (
         <div className="bg-gray-900 border border-[#21262d] rounded-xl shadow-xl overflow-hidden flex flex-col scroll-mt-6">
             {/*Form Section Header */}
@@ -275,7 +290,7 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                             type="text" 
                             required 
                             value={escort.idRef}
-                            onChange={(e) => updateEscortField(index, 'idRef',e.target.value)}
+                            onChange={(e) => updateEscortField(index, 'idRef',e.target.value.replace(/[^a-zA-Z0-9]/g, ''))}
                             placeholder="12-Digit Aadhaar / PAN" 
                             className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-1.5 text-gray-200 placeholder-gray-700 focus:outline-none focus:border-gray-600 focus:bg-[#12161d] transition-all" 
                           />
