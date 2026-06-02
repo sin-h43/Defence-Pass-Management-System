@@ -1,9 +1,10 @@
 import {Search, Bell, ClipboardList, Settings, Shield, History, UserPlus, LogOut, PanelRight, PanelLeft } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {savePass} from '../../utils/passStorage';
 import DataTable from '../../components/DataTable';
-import RegistrationForm from '../../components/RegistrationForm';
-// import DispatchedPassLog from '../../components/DispatchedPassLog';
+import RegistrationForm from '../../components/RegistrationForm'; // Used as component in JSX
+//import DispatchedPassLog from '../../components/DispatchedPassLog';
 
 
 export default function EmployeeDashboard() {
@@ -16,6 +17,8 @@ export default function EmployeeDashboard() {
   };
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  // const [newVisitorData, setNewVisitorData] = useState({});
+  // const [generatedId, setGeneratedId] = useState('');
   
   const navigate = useNavigate();
 
@@ -23,7 +26,7 @@ export default function EmployeeDashboard() {
     'ID',
     'Visitor Name',
     'Purpose',
-    'Time',
+    'Request Time',
     'Visitor Type',
     'Status',
   ];
@@ -33,7 +36,7 @@ export default function EmployeeDashboard() {
       id: 'DEF-1001',
       name: 'John Doe',
       purpose: 'Contractor Check-in',
-      time: '08:45 AM',
+      requestTime: '08:45 AM',
       type: 'New Visitor/Urgent Access',
       status: 'Cleared',
     },
@@ -41,7 +44,7 @@ export default function EmployeeDashboard() {
       id: 'DEF-1002',
       name: 'Jane Smith',
       purpose: 'Vendor Delivery',
-      time: '09:15 AM',
+      requestTime: '09:15 AM',
       type: 'New Visitor/Urgent Access',
       status: 'Pending Clearance',
     },
@@ -258,20 +261,37 @@ export default function EmployeeDashboard() {
             <RegistrationForm 
               showHRFeatures={false}
               onSubmitSuccess={(newVisitorData) => {
-                const generatedId = `DEF-${Math.floor(1000 + Math.random() * 9000)}`;
+              const generatedId = `DEF-${Math.floor(1000 + Math.random() * 9000)}`;
                 
                 // Format new row to match the datatable structure
                 const newRow = {
                   id: generatedId,
                   name: newVisitorData.name || "Unknown Visitor",
                   purpose: newVisitorData.purpose || "General Visit",
-                  time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                  requestTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                   type: newVisitorData.visitorType === "hr" ? "HR-Related Visit" : "New Visitor/Urgent Access",
                   status: "Pending Clearance"
                 };
 
                 // Append the new row to the existing table data 
                 setActivityRows(prevRows => [newRow, ...prevRows]);
+
+                const pass = {
+                  passId : generatedId,
+                  holderName :newVisitorData.name || "Unknown Visitor",
+                  purpose: newVisitorData.purpose || "General Visit",
+                  visitorCategory :newVisitorData.visitorCategory || "urgent",
+                  clearanceLevel: newVisitorData.clearanceLevel || "Level 1",
+                  escortedManifest:newVisitorData.headCount>0 ? `+${newVisitorData.headCount} Escorted` : "None (Solo)",
+                  type: newVisitorData.visitorType === "hr" ? "HR-Related Visit" : "New Visitor/Urgent Access",
+                  liveStatus: newVisitorData.visitorCategory === "scheduled"
+                    ? "Awaiting Arrival" : "Pending Clearance",
+                  requestedDate : new Date(Date.now() + 24*60*60*1000).toISOString(),
+                  fileUrl : "https://via.placholder.com/400x250?text=Uploaded+Document",
+                  createdAt: Date.now()
+                };
+                savePass(pass);
+
               }} 
             />
           </div>

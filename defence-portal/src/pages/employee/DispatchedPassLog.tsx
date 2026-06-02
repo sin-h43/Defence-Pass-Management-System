@@ -1,34 +1,36 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Shield, X, UserCheck, FileText, Search } from 'lucide-react';
+import { ArrowLeft, X, Search } from 'lucide-react';
 import StatusBadge from '../../components/StatusBadge';
+import { getStoredPasses } from "../../utils/passStorage";
+import type { PassRecord } from "../../utils/passStorage";
 
+// type PassRecord = {
+//   passId: string;
+//   holderName: string;
+//   purpose: string;
+//   email: string;
+//   dob: string;
+//   address: string;
+//   clearanceLevel: string;
+//   escortedManifest: string; 
+//   requestedDate: string;
+//   liveStatus: string;
+//   fileUrl: string;
+//   createdAt: string;
+//   };
 
-type PassRecord = {
-  passId: string;
-  holderName: string;
-  clearanceLevel: string;
-  escortedManifest: string;
-  expiration: string;
-  liveStatus: string;
-  purpose: string;
-  fileUrl: string;
-};
 
 export default function DispatchedPassLog() {
   const navigate = useNavigate();
   const [selectedPass, setSelectedPass] = useState<PassRecord | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  //Simulated data
-  const masterPassHistory = [
-    { passId: "DP-2024-001", holderName: "Sinchana K", clearanceLevel: "Level 2", escortedManifest: "+ 1 Escorted", expiration: "2026-06-01", liveStatus: "Active", purpose: "Core Server Room Maintenance", fileUrl: "https://via.placeholder.com/400x250?text=Aadhaar+Card+Encrypted" },
-    { passId: "DSP-8832", holderName: "Commander K. Singh", clearanceLevel: "Level 3", escortedManifest: "+ 2 Escorted", expiration: "2026-06-01", liveStatus: "Pending Clearance", purpose: "DRDO Tactical Alignment", fileUrl: "https://via.placeholder.com/400x250?text=Defense+ID+Form" },
-    { passId: "DSP-4591", holderName: "Alok Mehta", clearanceLevel: "Level 2", escortedManifest: "None (Solo)", expiration: "2026-05-28", liveStatus: "Checked Out", purpose: "Logistics Delivery", fileUrl: "https://via.placeholder.com/400x250?text=Vendor+Pass+Scan" },
-  ];
+  // Simulated data
+  const masterPassHistory = getStoredPasses();
+
 
   return (
-    <div className =" bg-gray-950/50 min-h-screen p-6 relative" > {/*the entire card*/}
-      <div className='flex items-center gap-4 mt-3 mb-2 shadow-xl '> 
+    <div className ="min-h-screen p-6 relative bg-[#0e121a] px-0 " > {/*the entire card*/}
+      <header className='flex items-center gap-4 mb-2 h-16 shadow-xl bg-gray-900'> 
         {/*Header section */}
         <div className='bg-gray-800 border border-[#30363d] rounded-lg ml-3'>
           {/*icon */}
@@ -42,58 +44,50 @@ export default function DispatchedPassLog() {
           <h1 className='text-2xl text-white font-bold tracking-tight'>Master Dispatched Pass Log</h1>
           <p className='text-xs text-white mb-1'>Comp</p>
         </div>
-      </div>
-      <div className='px-6 mb-6' >
-        <div className = "relative max-w-lg">
-          <Search className='absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-blue-400'/>
-          <input 
-            type='text'
-            placeholder='Query dispatch ledger'
-            className='w-full
-                            bg-[#0d1117]
-                            border border-[#30363d]
-                            rounded-lg
-                            pl-10
-                            pr-4
-                            py-2.5
-                            text-sm
-                            text-gray-200
-                            placeholder:text-gray-500
-                            focus:outline-none
-                            focus:border-blue-500'
+      </header>
+      <div className='px-6 mb-6 ' >
+        <div className="relative w-full max-w-md mx-4 group">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400 group-focus-within:text-amber-500 transition-colors" />
+            <input 
+              type="text" 
+              placeholder="Search visitors, requests, ID..." 
+              className="w-full bg-gray-950/50 border border-[#30363d] rounded-lg pl-10 pr-16 py-1.5 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-[#444c56] focus:bg-[#12161d] transition-all"
             />
-
         </div>
-
       </div>
       
-      <div className='bg-slate-900 border border-slate-800 rounded-xl shadow-xl overflow-x-auto'>
+      <div className='mx-3 bg-slate-900 border border-slate-800 rounded-xl shadow-xl overflow-x-auto'>
         {/*table */}
-        <table className='w-full text-left border-collapse'>
+        <table className='w-full text-left border-collapse '>
           <thead>
-            <tr className='bg-slate-950/60 border-b border-slate-800 text-xs font-semibold uppcase text-slate-400 tracking-wide '>
-              <th className='p-4'>Pass ID</th>
-              <th className='p-4'>Holder Name</th>
-              <th className='p-4'>Clearance</th>
-              <th className='p-4'>Escorted Manifest</th>
-              <th className='p-4'>Status</th>
+            <tr className='bg-gray-800/20 border-b border-[#21262d]  text-xs font-semibold uppercase text-gray-400 tracking-wide text-left '>
+              <th className='p-3.5 border-r border-[#21262d]'>Created At</th>
+              <th className='p-3.5 border-r border-[#21262d]'>Pass ID</th>            
+              <th className='p-3.5 border-r border-[#21262d]'>Holder Name</th>
+              <th className='p-3.5 border-r border-[#21262d]'>Escorted Manifest</th>
+              <th className='p-3.5 border-r border-[#21262d]'>Clearance</th>
+              <th className='p-3.5 border-r border-[#21262d]'>Requested Date</th>
+              <th className='p-3.5 border-r border-[#21262d]'>Status</th>
             </tr>
           </thead>
-          <tbody className='divide-y divide-slate-800/50 text-sm'>
+          <tbody className='divide-y divide-[#21262d] text-gray-300 text-sm'>
             {masterPassHistory.map((pass)=>(
               <tr 
                 key={pass.passId}
                 onClick={()=> setSelectedPass(pass)}
-                className='hover:bg-slate-800/60 cursor-pointor transition-colors gorup'>
-                <td className = "p-4 font-mono font-medium text-blue-400 group-hover:underline">{pass.passId}</td>
-                <td className = "p-4 font-medium">{pass.holderName}</td>
-                <td className='p-4 font-medium'>{pass.escortedManifest }</td>
-                <td className='p-4'>
+                className='hover:bg-[#161b22]/20 cursor-pointor transition-colors group'
+              >
+                <td className='p-4 text-gray-400 font-mono text-xs'>{pass.createdAt}</td>
+                <td className = "p-3.5 font-mono font-medium text-amber-500 group-hover:underline ">{pass.passId}</td>
+                <td className = "p-3.4 font-medium text-gray-200">{pass.holderName}</td>
+                <td className='p-3.5 font-medium'>{pass.escortedManifest }</td>              
+                <td className='p-3.5'>
                   <StatusBadge status={pass.clearanceLevel} />
                 </td>
                 <td className='p-4'>
                   <StatusBadge status={pass.liveStatus} />
                 </td>
+                <td className='p-3.5 font-medium'>{pass.requestedDate }</td>
               </tr>
             ))}
           </tbody>
@@ -196,7 +190,7 @@ export default function DispatchedPassLog() {
                 Expiration Date
               </p>
               <p className="text-white mt-1">
-                {selectedPass.expiration}
+                {selectedPass.requestedDate}
               </p>
             </div>
 

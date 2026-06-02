@@ -5,7 +5,7 @@ interface RowData {
   id: string;
   name: string;
   purpose: string;
-  time: string;
+  requestTime: string;
   type: string;
   status: string;
 }
@@ -45,7 +45,7 @@ export default function DataTable({ headers, rows }: DataTableProps) {
               <td className="p-3.5 font-mono text-amber-500 font-medium">{row.id}</td>
               <td className="p-3.5 font-medium text-gray-200">{row.name}</td>
               <td className="p-3.5 text-gray-400">{row.purpose}</td>
-              <td className="p-3.5 text-gray-500">{row.time}</td>
+              <td className="p-3.5 text-gray-500">{row.requestTime}</td>
               <td className="p-3.5 text-gray-400">{row.type}</td>
               <td className="p-3.5 text-right">
                 <StatusBadge status={row.status} />
@@ -73,7 +73,7 @@ export default function DataTable({ headers, rows }: DataTableProps) {
               </div>
               <div>
                 <span className="text-gray-500 block mb-0.5">Check-In Timestamp</span>
-                <span className="text-gray-200 font-medium">{selectedRow.time}</span>
+                <span className="text-gray-200 font-medium">{selectedRow.requestTime}</span>
               </div>
             </div>
             <div className="pt-2">
