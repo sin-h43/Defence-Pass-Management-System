@@ -83,6 +83,17 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
         fileName: uploadedFile.name,
         requestedDate: new Date()
     });
+    setName('');
+    setEmail('');
+    setDob('');
+    setIdRef('');
+    setAddress('');
+    setPurpose('');
+    setHeadCount(0);
+    setVisitorCategory('urgent'); // Match whatever your form's default starting tab is
+    setClearanceLevel('Level 1');
+    if (setEscortList) setEscortList([]); // If using an escort array state, reset it to empty
+    if (setUploadedFile) setUploadedFile(null); // Clears the file/drag & drop upload zone
     }
   };
 
@@ -171,6 +182,7 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                     type="text"
                     required
                     placeholder="e.g. Sinchana K"
+                    value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-white placeholder:text-gray-500 focus:outline-none focus:border-amber-500 focus:bg-[#12161d] transition-all"
                   />              
@@ -181,6 +193,7 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                     type="email"
                     required
                     placeholder="e.g. name@gmail.com"
+                    value={email}
                     onChange = {(e)=> setEmail(e.target.value)}
                     className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-white placeholder:text-gray-500 focus:outline-none focus:border-amber-500 focus:bg-[#12161d] transition-all"
                   />
@@ -190,6 +203,7 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                   <input
                     type="date"
                     required placeholder="dd/mm/yyyy"
+                    value={dob}
                     onChange={(e) => setDob(e.target.value)}
                     className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-amber-500"
                   />
@@ -227,6 +241,7 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
               <div className="space-y-1.5">
                 <label className="block text-gray-300 font-medium">Permanent Address</label>
                 <input type="text" required placeholder="e.g. House/Office No, Street, City, State, Pincode"
+                    value={address}
                     onChange = {(e)=> setAddress(e.target.value)}
                     className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-gray-500 text-gray-200" />
               </div>
