@@ -17,9 +17,6 @@ export default function EmployeeDashboard() {
   };
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  // const [newVisitorData, setNewVisitorData] = useState({});
-  // const [generatedId, setGeneratedId] = useState('');
-  
   const navigate = useNavigate();
 
   const activityHeaders = [
@@ -90,7 +87,8 @@ export default function EmployeeDashboard() {
           </div> 
           <div className={`w-full h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors ${
             isSidebarOpen? 'px-3 justify-start' : 'justify-center p-0'
-            }`}>
+            }`}
+            onClick={()=> navigate('/employee/pre-scheduledDashboard')}>
             <ClipboardList className="h-4 w-4 shrink-0"/>
             {isSidebarOpen && <span className='ml-2'>Pre-Scheduled Visits</span>}
           </div> 
@@ -282,8 +280,8 @@ export default function EmployeeDashboard() {
                   purpose: newVisitorData.purpose || "General Visit",
                   email: newVisitorData.email || " ",
                   dob: newVisitorData.dob || " ",
-                  idVRef:newVisitorData.idRef || " ",
-                  idVType: newVisitorData.idType || " ",
+                  idRef:newVisitorData.idRef || " ",
+                  idType: newVisitorData.idType || " ",
                   visitorCategory :newVisitorData.visitorCategory || "urgent",
                   clearanceLevel: newVisitorData.clearanceLevel || "Level 1",
                   escortList:newVisitorData.escortList || [],

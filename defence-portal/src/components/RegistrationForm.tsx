@@ -18,11 +18,12 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [dob, setDob] = useState('');
-    const [idVRef, setIdVRef] = useState('');
+    const [idRef, setIdRef] = useState('');
     const [address, setAddress] = useState('');
     const [purpose, setPurpose] = useState('');
-    const [idVType, setIdVType] = useState(' ');
+    const [idType, setIdType] = useState(' ');
     const [escortList, setEscortList] = useState<EscortMember[]>([]);
+    const [requestedDate, setRequestedDate] = useState('');
 
     //FT-3 state to control opening. closing the registration form
     const [visitorCategory, setVisitorCategory] = useState('new');
@@ -78,8 +79,8 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
         name,
         email,
         dob,
-        idVRef,
-        idVType,
+        idRef,
+        idType,
         address,
         purpose,
         visitorCategory,
@@ -87,16 +88,17 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
         headCount:escortList.length,
         escortList: escortList,
         fileName: uploadedFile.name,
-        requestedDate: new Date()
+        requestedDate: visitorCategory === 'scheduled' ? requestedDate : new Date().toISOString()
+
     });
     setName('');
     setEmail('');
     setDob('');
-    setIdVRef('');
-    setIdVType('');
+    setIdRef('');
     setAddress('');
     setPurpose('');
     setHeadCount(0);
+    setRequestedDate('');
     setVisitorCategory('urgent'); // Match whatever your form's default starting tab is
     setClearanceLevel('Level 1');
     if (setEscortList) setEscortList([]); // If using an escort array state, reset it to empty
@@ -181,6 +183,24 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                     <ChevronDown className="absolute right-3 top-2.5 h-4 w-4 text-gray-500 pointer-events-none" />
                 </div>
               </div>
+              {//conditional rendering
+                visitorCategory === 'scheduled' && (
+                  <div className="space-y-1.5 p-3.5 bg-amber-500/5 border border-amber-500/20 rounded-lg animate-in fade-in slide-in-from-top-2 duration-200">
+                  <label className="block text-amber-400 font-semibold">Requested Arrival Date & Time *</label>
+                  <input 
+                    type="date"
+                    required={visitorCategory==='scheduled'}
+                    value={requestedDate}
+                    onChange={(e)=> setRequestedDate(e.target.value)}
+                    className="w-full sm:w-72 bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 focus:outline-none focus:border-amber-500 transition-colors"
+                  />
+                    {/* <p className="text-[10px] text-gray-500 mt-1">
+                    System parameters note: Access passes will retain operational authorization windows structured off this target window timestamp.
+                    </p> */}
+                  </div>
+                )
+
+              }
               {/* Grid text Inputs */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-1.5">
@@ -225,18 +245,18 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                     required
                     // Pinned maximum limit directly on the DOM element wrapper
                     maxLength={12} 
-                    value={idVRef}
+                    value={idRef}
                     // Strips spaces, hyphens, and symbols so they don't eat into your max length limit
                     onChange={(e) => {
-                      const {value, idVType} = detectedGovtIdType(e.target.value);
-                      setIdVRef(value);
-                      setIdVType(idVType);
+                      const {value, idType} = detectedGovtIdType(e.target.value);
+                      setIdRef(value);
+                      setIdType(idType);
                     }}
                     onBlur={()=>{
-                      if(idVType === 'Incomplete / Invalid'){
+                      if(idType === 'Incomplete / Invalid'){
                         alert('Invalid ID Format! Please enter a valid 12-Digit Aadhaar or alpha-numeric PAN.')
-                        setIdVRef('');
-                        setIdVType('');
+                        setIdRef('');
+                        setIdType('');
                       }
                     }}
                     placeholder="12-Digit Aadhaar / Alpha-Numeric PAN"

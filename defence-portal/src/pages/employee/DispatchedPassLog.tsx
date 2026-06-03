@@ -35,8 +35,8 @@ export default function DispatchedPassLog() {
 
 
   return (
-    <div className ="min-h-screen p-6 relative bg-[#0e121a] px-0 " > {/*the entire card*/}
-      <header className='flex items-center gap-4 mb-2 h-16 shadow-xl bg-gray-900'> 
+    <div className ="min-h-screen p-6 relative bg-[#0e121a] px-0 py-0 " > {/*the entire card*/}
+      <header className='flex items-center gap-4 mb-2 py-4 shadow-xl bg-gray-900'> 
         {/*Header section */}
         <div className='bg-gray-800 border border-[#30363d] rounded-lg ml-3'>
           {/*icon */}
