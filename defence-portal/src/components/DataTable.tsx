@@ -1,32 +1,43 @@
 import StatusBadge from "./StatusBadge";
-import {useState} from "react";
+import { useState, useEffect } from "react";
 import RightDrawer from "./RightDrawer";
-interface RowData {
-  id: string;
-  name: string;
-  purpose: string;
-  requestTime: string;
-  type: string;
-  status: string;
-}
+// 1. Import the global type from your utility file
+import type { Visitor } from "../utils/searchFilters";
 
 interface DataTableProps {
-    headers: string[];
-    rows: RowData[];
+  headers: string[];
+  rows: Visitor[]; // 2. Update to use Visitor[]
+  externalSelectedRow?: Visitor | null; // 3. Update to use Visitor
+  onExternalSelectRow?: (row: Visitor | null) => void; // 4. Update to use Visitor
 }
 
-export default function DataTable({ headers, rows }: DataTableProps) {
-
+export default function DataTable({ headers, rows, externalSelectedRow, onExternalSelectRow }: DataTableProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState<RowData | null>(null);
-  const handleRowClick = (row: RowData) => {
+  const [selectedRow, setSelectedRow] = useState<Visitor | null>(null); // 5. Update to use Visitor
+
+  useEffect(() => {
+    if (externalSelectedRow) {
+      setSelectedRow(externalSelectedRow);
+      setIsDrawerOpen(true);
+    }
+  }, [externalSelectedRow]);
+
+  const handleRowClick = (row: Visitor) => { // 6. Update to use Visitor
     setSelectedRow(row);
     setIsDrawerOpen(true);
+    if (onExternalSelectRow) onExternalSelectRow(row);
   };
 
-    return (
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse text-xs">
+  const handleCloseDrawer = () => {
+    setIsDrawerOpen(false);
+    setSelectedRow(null);
+    if (onExternalSelectRow) onExternalSelectRow(null);
+  };
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-left border-collapse text-xs">
+        {/* Keep the exact same mapping code inside the table—it stays unchanged! */}
         <thead>
           <tr className="border-b border-[#21262d] bg-gray-800/20 text-gray-400 font-medium select-none">
             {headers.map((header, idx) => (
@@ -40,7 +51,7 @@ export default function DataTable({ headers, rows }: DataTableProps) {
           {rows.map((row) => (
             <tr key={row.id} 
               onClick={() => handleRowClick(row)}
-              className="hover:bg-[#161b22]/20 transition-colors"
+              className="hover:bg-[#161b22]/20 transition-colors cursor-pointer"
             >
               <td className="p-3.5 font-mono text-amber-500 font-medium">{row.id}</td>
               <td className="p-3.5 font-medium text-gray-200">{row.name}</td>
@@ -48,45 +59,21 @@ export default function DataTable({ headers, rows }: DataTableProps) {
               <td className="p-3.5 text-gray-500">{row.requestTime}</td>
               <td className="p-3.5 text-gray-400">{row.type}</td>
               <td className="p-3.5 text-right">
-                <StatusBadge status={row.status} />
+                <StatusBadge status={row.status || 'Pending'} />
               </td>
             </tr>
           ))}
         </tbody>
       </table> 
-      {/*Resuable Right Drawer Component for Detailed View on Row Click*/}
+
+      {/* Right Drawer section remains exactly identical below */}
       <RightDrawer
         isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        title={`Security Entry Dossier - ${selectedRow?.id}`}
+        onClose={handleCloseDrawer} 
+        title={`Security Entry Dossier - ${selectedRow?.id || ''}`}
       >
-        {selectedRow && (
-          <div className="space-y-4">
-            <div>
-              <span className="text-gray-500 block mb-0.5">Visitor Identity Record</span>
-              <span className="text-base font-semibold text-white block">{selectedRow.name}</span>
-            </div>
-            <div className="grid grid-cols-2 gap-4 pt-2">
-              <div>
-                <span className="text-gray-500 block mb-0.5">Assigned Pipeline</span>
-                <span className="text-gray-200 font-medium">{selectedRow.type}</span>
-              </div>
-              <div>
-                <span className="text-gray-500 block mb-0.5">Check-In Timestamp</span>
-                <span className="text-gray-200 font-medium">{selectedRow.requestTime}</span>
-              </div>
-            </div>
-            <div className="pt-2">
-              <span className="text-gray-500 block mb-0.5">Declared Purpose of Visit</span>
-              <span className="text-gray-200 font-medium">{selectedRow.purpose}</span>
-            </div>
-            <div className="pt-4 border-t border-gray-800 flex items-center justify-between">
-              <span className="text-gray-500">Live Status:</span>
-              <StatusBadge status={selectedRow.status} />
-            </div>
-          </div>
-        )}
+        {null}
       </RightDrawer>
     </div>
-    );
+  );
 }

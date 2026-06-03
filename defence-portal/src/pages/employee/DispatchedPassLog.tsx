@@ -71,7 +71,7 @@ export default function DispatchedPassLog() {
               <th className='p-3.5 border-r border-[#21262d]'>Pass ID</th>            
               <th className='p-3.5 border-r border-[#21262d]'>Holder Name</th>
               <th className='p-3.5 border-r border-[#21262d]'>Escorted Manifest</th>
-              <th className='p-3.5 border-r border-[#21262d]'>Clearance</th>
+              <th className='p-3.5 border-r border-[#21262d]'>Requested Type</th>
               <th className='p-3.5 border-r border-[#21262d]'>Requested Date</th>
               <th className='p-3.5 border-r border-[#21262d]'>Status</th>
             </tr>
@@ -88,7 +88,7 @@ export default function DispatchedPassLog() {
                 <td className = "p-3.4 font-medium text-gray-200">{pass.holderName}</td>
                 <td className='p-3.5 font-medium'>{pass.escortedManifest }</td>              
                 <td className='p-3.5'>
-                  <StatusBadge status={pass.clearanceLevel} />
+                  <StatusBadge status={pass.type} />
                 </td>
                 <td className='p-4'>
                   <StatusBadge status={pass.liveStatus} />
@@ -163,10 +163,17 @@ export default function DispatchedPassLog() {
               <label className="block text-xs uppercase tracking-wider text-gray-500">Email Address</label>
               <p className="text-gray-300 text-sm font-mono">{selectedPass.email}</p>
             </div>
-            <div>
-              <label className="block text-xs uppercase tracking-wider text-gray-500">{selectedPass.idType}</label>
-              <p className="text-gray-300 text-sm font-mono">{selectedPass.isRef}</p>
-            </div>
+            <div className='col-start-1 mt-2'>
+  {/* Fallback to 'Government ID' if idType isn't populated yet */}
+  <label className="block text-xs uppercase tracking-wider text-gray-500">
+    {selectedPass.idType || "Government ID"}
+  </label>
+  
+  {/* Change .isRef to the actual property holding the string (e.g., .value or .idNumber) */}
+  <p className="text-gray-300 text-sm font-mono mt-0.5">
+    {selectedPass.value || "No ID Number Provided"}
+  </p>
+</div>
 
           </div>
 

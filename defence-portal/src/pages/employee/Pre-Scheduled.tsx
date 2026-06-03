@@ -186,11 +186,7 @@ export default function PreSched() {
                       <label className="block text-xs uppercase tracking-wider text-gray-500">Email Address</label>
                       <p className="text-gray-300 text-sm font-mono">{selectedPass.email || 'N/A'}</p>
                     </div>
-                    <div>
-                      <label className="block text-xs uppercase tracking-wider text-gray-500">Identity Flag Type</label>
-                      <p className="text-gray-300 text-sm font-mono">{selectedPass.idType || 'Verified ID'}</p>
                     </div>
-                  </div>
 
                   <div className="grid grid-cols-2 gap-4 border-t border-gray-800/60 pt-4">
                     <div>
@@ -235,9 +231,15 @@ export default function PreSched() {
                 {/* Right Document Display Panel */}
                 <div className="border-l border-slate-800 p-6 flex flex-col justify-between">
                   <div>
-                    <h3 className="text-sm font-medium text-white mb-4">
-                      Uploaded Verification File
-                    </h3>
+                    <div className="flex justify-between items-center">
+                        <h3 className="text-sm font-medium text-white mb-4">
+                        Uploaded Verification File
+                        </h3>
+                        <span className="px-1.5  rounded bg-gray-900 border border-gray-800 text-amber-500 text-[10px] font-mono">
+                              {selectedPass.idType || "Gov ID"}
+                        </span>
+
+                    </div>
                     <div className="border border-slate-800 rounded-xl overflow-hidden bg-slate-950">
                       <img
                         src={selectedPass.fileUrl || "https://placeholder.pics/svg/400x250/0F172A/94A3B8/NoImage"}

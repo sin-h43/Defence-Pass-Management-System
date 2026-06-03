@@ -5,11 +5,15 @@ import {savePass} from '../../utils/passStorage';
 import DataTable from '../../components/DataTable';
 import RegistrationForm from '../../components/RegistrationForm'; // Used as component in JSX
 //import DispatchedPassLog from '../../components/DispatchedPassLog';
+import { filterByIdentityAndId } from '../../utils/searchFilters';
+import type {Visitor} from '../../utils/searchFilters';
+
 
 
 export default function EmployeeDashboard() {
 
   const [showNotifications, setShowNotifications] = useState(false);
+  const [searchQuery, setSearchQuery]= useState<string>('');
   //anchor reference used to target the registration block for scorlling
   const registrationFormRef = useRef<HTMLDivElement>(null);
   const scrollToRegistrationForm = () => {
@@ -28,7 +32,7 @@ export default function EmployeeDashboard() {
     'Status',
   ];
 
-  const [activityRows, setActivityRows] = useState([
+  const [activityRows, setActivityRows] = useState<Visitor[]>([
     {
       id: 'DEF-1001',
       name: 'John Doe',
@@ -46,6 +50,15 @@ export default function EmployeeDashboard() {
       status: 'Pending Clearance',
     },
   ]);
+
+  const filteredVisitors = filterByIdentityAndId(activityRows,searchQuery);
+
+  const [selectedPass, setSelectedPass] = useState<Visitor | null> (null);
+
+  const handleSelectedVisitor = (visitor:Visitor)=>{
+    setSelectedPass(visitor);
+    setSearchQuery('');
+  }
 
   return (
     // outer container (FIXED: Corrected typo 'oveflow-hidden' to 'overflow-hidden')
@@ -144,20 +157,46 @@ export default function EmployeeDashboard() {
           </button>
           
           {/*Search Bar: max width so it doesn't crowd out right-side header items)*/}
-          <div className="relative w-full max-w-md mx-4 group">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400 group-focus-within:text-amber-500 transition-colors" />
-            <input 
-              type="text" 
-              placeholder="Search visitors, requests, ID..." 
-              className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg pl-10 pr-16 py-1.5 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-[#444c56] focus:bg-[#12161d] transition-all"
-            />
-            
-            {/* Kbd Shortcut Badge pinned to the right side of the input field */}
-            <div className="absolute right-3 top-2 hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 bg-[#161b22] border border-[#30363d] rounded text-[10px] font-mono text-gray-500 pointer-events-none">
-              <span>ctrl</span>
-              <span>+</span>
-              <span>k</span>
+          <div className="relative w-full max-w-md mx-4">
+            {/* Search Input Container Box */}
+            <div className="flex items-center bg-slate-900 border border-slate-850 rounded-lg px-3 py-2">
+              <Search className="text-gray-500 mr-2 h-4 w-4" />
+              <input
+                type="text"
+                placeholder="Search visitors, requests, ID..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full bg-transparent text-sm focus:outline-none placeholder-gray-500 text-white"
+              />
+              {/* Optional clean badge layout right inside input panel */}
+              <div className="hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 bg-[#161b22] border border-[#30363d] rounded text-[10px] font-mono text-gray-500 pointer-events-none ml-2">
+                <span>ctrl</span>
+                <span>+</span>
+                <span>k</span>
+              </div>
             </div>
+
+            {/* Absolute Dropdown Layer for Filtered Results */}
+            {searchQuery && (
+              <div className="absolute top-full left-0 w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl z-50 overflow-hidden">
+                {filteredVisitors.length > 0 ? (
+                  filteredVisitors.map((visitor) => (
+                    <div 
+                      key={visitor.id} 
+                      onClick={() => handleSelectedVisitor(visitor)}
+                      className="flex justify-between items-center px-4 py-2.5 hover:bg-slate-800/60 cursor-pointer border-b border-slate-850 last:border-b-0 transition-colors"
+                    >
+                      <span className="text-sm font-medium text-white">{visitor.name}</span>
+                      <span className="text-xs font-mono text-amber-500">{visitor.id}</span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="px-4 py-3 text-xs text-gray-500 italic">
+                    No records match "{searchQuery}"
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* ZONE 2 & 3: RIGHT SIDE PLACEHOLDER FOR NEXT STEP (FIXED: Container handles notification bell inside header alignment) */}
@@ -249,7 +288,10 @@ export default function EmployeeDashboard() {
             {/* The Responsive Table Element */}
             <DataTable 
               headers={activityHeaders} 
-              rows={activityRows}
+              rows={filteredVisitors as any}
+              externalSelectedRows = {selectedPass}
+              onExternalSelectedRow = {setSelectedPass}
+              
                />
           </div>
 
@@ -289,7 +331,7 @@ export default function EmployeeDashboard() {
                   type: newVisitorData.visitorType === "hr" ? "HR-Related Visit" : "New Visitor/Urgent Access",
                   liveStatus: newVisitorData.visitorCategory === "scheduled"
                     ? "Awaiting Arrival" : "Pending Clearance",
-                  requestedDate : new Date(Date.now() + 24*60*60*1000).toISOString(),
+                  requestedDate : newVisitorData.requestedDate || new Date(Date.now() + 24*60*60*1000).toISOString(),
                   fileUrl : "https://via.placholder.com/400x250?text=Uploaded+Document",
                   createdAt: Date.now()
                 };
