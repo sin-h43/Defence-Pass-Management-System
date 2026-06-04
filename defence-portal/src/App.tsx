@@ -2,6 +2,7 @@ import {Routes, Route, Navigate} from 'react-router-dom';
 import EmployeeDashboard from './pages/employee/EmployeeDashboard.tsx';
 import DispatchedPassLog from './pages/employee/DispatchedPassLog.tsx';
 import PreSched from './pages/employee/Pre-Scheduled.tsx';
+import RepeatedVisitorsPage from './pages/employee/RepeatedVisitorPage.tsx';
 
 //placeholder for HR n Security until we write their full code 
 const HRDashboard = () => (
@@ -25,11 +26,16 @@ function App(){
         <Route path="/employee" element={<EmployeeDashboard />} />
         {/* 2.Dispatched Pass Log */}
         <Route path="/employee/dispatchedPassLog" element={<DispatchedPassLog />} />
-        {/*4.Pre-Scheduled Page */}
+        {/*3.Pre-Scheduled Page */}
         <Route path="/employee/pre-scheduledDashboard" element={<PreSched />} />
-        {/* 3.Security Dashboard */}
+        {/*3.Repeated Visitor Page */}
+        <Route
+          path="/employee/repeatedVisitor"
+          element={<RepeatedVisitorsPage/>}
+        />
+        {/* 5.Security Dashboard */}
         <Route path="/security" element={<SecurityDashboard />} />
-        {/* 4.HR Dashboard */}
+        {/* 6.HR Dashboard */}
         <Route path="/hr" element={<HRDashboard />} />
         {/* Redirect to employee dashboard as default */}
         <Route path="/" element={<Navigate to="/employee" />} />

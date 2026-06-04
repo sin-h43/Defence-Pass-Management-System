@@ -1,17 +1,37 @@
 import {Search, Bell, ClipboardList, Settings, Shield, History, UserPlus, LogOut, PanelRight, PanelLeft } from 'lucide-react';
-import { useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {savePass} from '../../utils/passStorage';
 import DataTable from '../../components/DataTable';
 import RegistrationForm from '../../components/RegistrationForm'; // Used as component in JSX
 //import DispatchedPassLog from '../../components/DispatchedPassLog';
 import { filterByIdentityAndId } from '../../utils/searchFilters';
 import type {Visitor} from '../../utils/searchFilters';
-// import RightDrawer from '../../components/RightDrawer';
+import RightDrawer from '../../components/RightDrawer';
 
 
 
 export default function EmployeeDashboard() {
+
+  const location = useLocation();
+  console.log(location.state);
+  const [autoFillData, setAutoFillData] = useState<any>(null);
+
+  useEffect(()=>{
+    //we check for 'autofillData' because that's what RepeatedVisitorPage.tsx sends
+    const autofillData = (location.state as any)?.autofillData || (location.state as any)?.autoFillData;
+
+    if(autofillData){
+      console.log("Received autofill data:", autofillData);
+      setAutoFillData(autofillData);
+      alert(`Security core: Profile verified for ${autofillData.name}. Injecting identity registry credentials.`)
+
+      //clean the state so it doesnt refil on refresh
+      window.history.replaceState({}, document.title);
+    }
+  },[location]);
+  
+
 
   const [showNotifications, setShowNotifications] = useState(false);
   const [searchQuery, setSearchQuery]= useState<string>('');
@@ -55,13 +75,16 @@ export default function EmployeeDashboard() {
   const filteredVisitors = filterByIdentityAndId(activityRows,searchQuery);
 
   const [selectedPass, setSelectedPass] = useState<Visitor | null> (null);
-  // const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  // const closeDrawer = () => setIsDrawerOpen(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const closeDrawer = () => setIsDrawerOpen(false);
 
   const handleSelectedVisitor = (visitor:Visitor)=>{
     setSelectedPass(visitor);
     setSearchQuery('');
+    setIsDrawerOpen(true);
   }
+
+  
 
   return (
     // outer container (FIXED: Corrected typo 'oveflow-hidden' to 'overflow-hidden')
@@ -97,7 +120,8 @@ export default function EmployeeDashboard() {
               isSidebarOpen? 'px-3 justify-start' : 'justify-center p-0'
             }`}
             title='Repeated Visitor Logs'
-            >
+            onClick={()=> navigate('/employee/repeatedVisitor')}>
+
             <History className="h-4 w-4 shrink-0"/>
             {isSidebarOpen && <span className='ml-2'>Repeated Visitor</span>}
           </div> 
@@ -179,9 +203,20 @@ export default function EmployeeDashboard() {
               </div>
             </div>
 
-          {/* Absolute Dropdown Layer for Filtered Results */}
-          
-          
+            {/* Absolute Dropdown Layer for Filtered Results */}
+            <RightDrawer
+            isOpen = {isDrawerOpen}
+            onClose={closeDrawer}
+            title = {`Security Entry Dossier - ${selectedPass?.id || ''}`}
+          >
+            {/* 3. Pass children content down here since your interface requires React.ReactNode */}
+            <div className="p-4">
+              <h3 className="text-lg font-semibold mb-2">Visitor Details</h3>
+              <p>Name: {selectedPass?.name}</p>
+              <p>ID: {selectedPass?.id}</p>
+              {/* Additional security dossier elements go here */}
+            </div>
+      </RightDrawer>
             {searchQuery && (
               <div className="absolute top-full left-0 w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl z-50 overflow-hidden">
                 {filteredVisitors.length > 0 ? (
@@ -307,6 +342,7 @@ export default function EmployeeDashboard() {
             {/* Render our highly scalable and reusable component */}
             <RegistrationForm 
               showHRFeatures={false}
+              initialValues={autoFillData}
               onSubmitSuccess={(newVisitorData) => {
               const generatedId = `DEF-${Math.floor(1000 + Math.random() * 9000)}`;
                 

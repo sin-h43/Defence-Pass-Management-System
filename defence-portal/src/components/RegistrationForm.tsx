@@ -1,9 +1,10 @@
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import {UserPlus, ChevronDown, Users, Upload, FileCheck} from "lucide-react";
 
 interface RegistrationFormProps {
     showHRFeatures? : boolean;
     onSubmitSuccess: (formData: any) => void;
+    initialValues?: any;
 }
 
 interface EscortMember {
@@ -12,7 +13,7 @@ interface EscortMember {
   idType: string;
 }
 
-export default function RegistrationForm({ showHRFeatures = false, onSubmitSuccess }: RegistrationFormProps) {
+export default function RegistrationForm({ showHRFeatures = false, onSubmitSuccess, initialValues }: RegistrationFormProps) {
 
     //primary Form state trackers
     const [name, setName] = useState('');
@@ -35,6 +36,31 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
 //drag n drop state elements
     const [isDragging, setIsDragging] = useState(false);
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
+    // ADD THIS HOOK BELOW YOUR USESTATES:
+    useEffect(() => {
+        if (initialValues) {
+            setName(initialValues.name || '');
+            setEmail(initialValues.email || '');
+            setDob(initialValues.dob || '');
+            setIdRef(initialValues.idRef || '');
+            setAddress(initialValues.address || '');
+            setPurpose(initialValues.purpose || '');
+            setVisitorCategory('repeated'); // Swaps the tab to Repeated Visitor
+            
+            // If the ID Type was detected previously
+            const detection = detectedGovtIdType(initialValues.idRef || '');
+            setIdType(detection.idType);
+
+            // Handle the mock file if one was provided in the payload
+            if (initialValues.fileUrl) {
+                // Since we can't easily turn a URL into a File object for the input,
+                // we create a "Fake" file so the validation check passes.
+                const mockFile = new File([""], "previously_verified_id.jpg", { type: "image/jpeg" });
+                setUploadedFile(mockFile);
+            }
+        }
+    }, [initialValues]);
 
     const handleHeadCountChange = (newCount: number) => {
     if (isNaN(newCount)) return;
