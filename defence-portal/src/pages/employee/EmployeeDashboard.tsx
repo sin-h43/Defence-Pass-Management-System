@@ -7,6 +7,7 @@ import RegistrationForm from '../../components/RegistrationForm'; // Used as com
 //import DispatchedPassLog from '../../components/DispatchedPassLog';
 import { filterByIdentityAndId } from '../../utils/searchFilters';
 import type {Visitor} from '../../utils/searchFilters';
+// import RightDrawer from '../../components/RightDrawer';
 
 
 
@@ -54,6 +55,8 @@ export default function EmployeeDashboard() {
   const filteredVisitors = filterByIdentityAndId(activityRows,searchQuery);
 
   const [selectedPass, setSelectedPass] = useState<Visitor | null> (null);
+  // const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  // const closeDrawer = () => setIsDrawerOpen(false);
 
   const handleSelectedVisitor = (visitor:Visitor)=>{
     setSelectedPass(visitor);
@@ -176,7 +179,9 @@ export default function EmployeeDashboard() {
               </div>
             </div>
 
-            {/* Absolute Dropdown Layer for Filtered Results */}
+          {/* Absolute Dropdown Layer for Filtered Results */}
+          
+          
             {searchQuery && (
               <div className="absolute top-full left-0 w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl z-50 overflow-hidden">
                 {filteredVisitors.length > 0 ? (
@@ -198,6 +203,8 @@ export default function EmployeeDashboard() {
               </div>
             )}
           </div>
+
+          
 
           {/* ZONE 2 & 3: RIGHT SIDE PLACEHOLDER FOR NEXT STEP (FIXED: Container handles notification bell inside header alignment) */}
           <div className="flex relative items-center gap-4 shrink-0">
@@ -289,8 +296,8 @@ export default function EmployeeDashboard() {
             <DataTable 
               headers={activityHeaders} 
               rows={filteredVisitors as any}
-              externalSelectedRows = {selectedPass}
-              onExternalSelectedRow = {setSelectedPass}
+              externalSelectedRow = {selectedPass}
+              onExternalSelectRow = {setSelectedPass}
               
                />
           </div>

@@ -72,7 +72,37 @@ export default function DataTable({ headers, rows, externalSelectedRow, onExtern
         onClose={handleCloseDrawer} 
         title={`Security Entry Dossier - ${selectedRow?.id || ''}`}
       >
-        {null}
+        <div className="space-y-4">
+  <div>
+    <p className="text-gray-500 text-xs">Visitor Name</p>
+    <p className="text-white">{selectedRow?.name}</p>
+  </div>
+
+  <div>
+    <p className="text-gray-500 text-xs">Visitor ID</p>
+    <p className="text-amber-500 font-mono">{selectedRow?.id}</p>
+  </div>
+
+  <div>
+    <p className="text-gray-500 text-xs">Purpose</p>
+    <p>{selectedRow?.purpose}</p>
+  </div>
+
+  <div>
+    <p className="text-gray-500 text-xs">Request Time</p>
+    <p>{selectedRow?.requestTime}</p>
+  </div>
+
+  <div>
+    <p className="text-gray-500 text-xs">Visitor Type</p>
+    <p>{selectedRow?.type}</p>
+  </div>
+
+  <div>
+    <p className="text-gray-500 text-xs">Status</p>
+    <p>{selectedRow?.status}</p>
+  </div>
+</div>
       </RightDrawer>
     </div>
   );
