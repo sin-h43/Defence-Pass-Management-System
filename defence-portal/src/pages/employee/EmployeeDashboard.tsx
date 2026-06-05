@@ -378,6 +378,7 @@ export default function EmployeeDashboard() {
                   dob: newVisitorData.dob || " ",
                   idRef: newVisitorData.idRef || " ",
                   idType: newVisitorData.idType || " ",
+                  ph: newVisitorData.ph || " ",
                   visitorCategory: newVisitorData.visitorCategory || "urgent",
                   clearanceLevel: newVisitorData.clearanceLevel || "Level 1",
                   escortList: newVisitorData.escortList || [],

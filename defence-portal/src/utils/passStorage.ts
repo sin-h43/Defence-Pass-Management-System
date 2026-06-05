@@ -2,6 +2,7 @@ export interface PassRecord {
   passId: string;
   holderName: string;
   purpose: string;
+  ph?:string;
   email?: string;
   dob?: string;
   address?: string;

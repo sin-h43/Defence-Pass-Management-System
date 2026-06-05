@@ -16,7 +16,8 @@ export default function PassDetailView({ pass }: PassDetailViewProps) {
               Pass ID
             </label>
             <p className="text-orange-400 font-mono font-bold text-sm">
-              {pass.passId || pass.id}
+              {pass.passId } 
+              {/* removed pass.id */}
             </p>
           </div>
           <div>
@@ -47,6 +48,12 @@ export default function PassDetailView({ pass }: PassDetailViewProps) {
               Email Address
             </label>
             <p className="text-gray-300 text-sm font-mono">{pass.email}</p>
+          </div>
+          <div>
+            <label className="block text-xs uppercase tracking-wider text-gray-500">
+              Phone Number
+            </label>
+            <p className="text-gray-300 text-sm font-mono">{pass.ph}</p>
           </div>
           <div className='col-start-1 mt-2'>
             <label className="block text-xs uppercase tracking-wider text-gray-500">

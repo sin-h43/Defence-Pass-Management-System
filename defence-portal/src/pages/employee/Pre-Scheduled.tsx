@@ -184,6 +184,10 @@ export default function PreSched() {
                       <p className="text-amber-400 text-sm font-mono font-bold">{selectedPass.requestedDate ? selectedPass.requestedDate.replace('T', ' ') : 'N/A'}</p>
                     </div>
                     <div>
+                      <label className="block text-xs uppercase tracking-wider text-gray-500">Phone Number</label>
+                      <p className="text-amber-400 text-sm font-mono font-bold">{selectedPass.ph || 'N/A' }</p>
+                    </div>
+                    <div>
                       <label className="block text-xs uppercase tracking-wider text-gray-500">Email Address</label>
                       <p className="text-gray-300 text-sm font-mono">{selectedPass.email || 'N/A'}</p>
                     </div>
