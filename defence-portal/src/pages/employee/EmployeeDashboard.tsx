@@ -12,14 +12,6 @@ import { useRepeatedVisitors } from '../../contexts/RepeatedVisitorsContext';
 
 export default function EmployeeDashboard() {
 
-  const visitorTypeLabels = {
-  "hr": "HR-Related Visit",
-  "new": "New Visitor/Urgent Access",
-  "repeated": "Repeated Visitor",
-  "repeat": "Repeated Visitor",
-  "scheduled": "Pre-scheduled Visit"
-};
-
   const { addNewVisitRecord } = useRepeatedVisitors(); // Fixed: changed from useNewVisitRecord to addNewVisitRecord
   const location = useLocation();
   console.log(location.state);
@@ -84,6 +76,7 @@ export default function EmployeeDashboard() {
   const [selectedPass, setSelectedPass] = useState<Visitor | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const closeDrawer = () => setIsDrawerOpen(false);
+  
 
   const handleSelectedVisitor = (visitor: Visitor) => {
     setSelectedPass(visitor);
@@ -93,12 +86,17 @@ export default function EmployeeDashboard() {
 
   // Handle repeated visitor form submission - adds to shared context
   const handleRepeatedVisitorSubmit = (newRecord: PassRecord) => {
-    addNewVisitRecord(newRecord);
-    console.log('New repeated visitor record added to global history:', newRecord);
-    // Optional: Show success notification
-    // You could add a toast notification here
-    alert(`Repeated visitor record added for ${newRecord.holderName}. You can view it in the Repeated Visitor Registry.`);
+    const validatedRecord = {
+    ...newRecord,
+    requestedDate: newRecord.requestedDate || new Date().toISOString(),
+    escortList: newRecord.escortList || [],
+    liveStatus: newRecord.liveStatus || "Pre-cleared",
+    type: newRecord.type || "repeated"
   };
+    addNewVisitRecord(newRecord);
+     console.log('New repeated visitor record added to global history:', validatedRecord);
+  alert(`Repeated visitor record added for ${validatedRecord.holderName}. You can view it in the Repeated Visitor Registry.`);
+};
 
   return (
     <div className="flex h-screen w-screen bg-[#0e121a] text-white font-sans overflow-hidden">
@@ -362,8 +360,18 @@ export default function EmployeeDashboard() {
               showHRFeatures={false}
               initialValues={autoFillData}
               onSubmitSuccess={(newVisitorData) => {
+                console.log("Form submitted with data:", newVisitorData);
                 const generatedId = `DEF-${Math.floor(1000 + Math.random() * 9000)}`;
-
+                // Fix: Map visitorCategory to proper type label
+                const getVisitorTypeLabel = (category: string) => {
+                  const typeMap: Record<string, string> = {
+                    "hr": "HR-Related Visit",
+                    "new": "New Visitor/Urgent Access", 
+                    "repeated": "Repeated Visitor",
+                    "scheduled": "Pre-scheduled Visit"
+                  };
+                  return typeMap[category?.toLowerCase()] || "General Visit";
+                };
                 // Format new row to match the datatable structure
                 const newRow = {
                   id: generatedId,
@@ -377,7 +385,8 @@ export default function EmployeeDashboard() {
                 // Append the new row to the existing table data 
                 setActivityRows(prevRows => [newRow, ...prevRows]);
                 // Instead of passing a straight value like setActivityRows(newData), this passes a callback function.
-
+                const requestedDate = newVisitorData.requestedDate || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+                const escortList = newVisitorData.escortList || [];
                 const pass = {
                   passId: generatedId,
                   holderName: newVisitorData.name || "Unknown Visitor",
@@ -389,17 +398,17 @@ export default function EmployeeDashboard() {
                   ph: newVisitorData.ph || " ",
                   visitorCategory: newVisitorData.visitorCategory || "urgent",
                   clearanceLevel: newVisitorData.clearanceLevel || "Level 1",
-                  escortList: newVisitorData.escortList || [],
+                  escortList: escortList,
                   escortedManifest: newVisitorData.headCount > 0 ? `+${newVisitorData.headCount} Escorted` : "None (Solo)",
-                  type: visitorTypeLabels[newVisitorData.visitorType?.toLowerCase() as keyof typeof visitorTypeLabels] || "General Visit",                  liveStatus: newVisitorData.visitorCategory === "scheduled"
-                    ? "Awaiting Arrival" : "Pending Clearance",
-                  requestedDate: newVisitorData.requestedDate || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+                  type: getVisitorTypeLabel(newVisitorData.visitorType || newVisitorData.visitorCategory),                  requestedDate: requestedDate,
                   fileUrl: "https://via.placeholder.com/400x250?text=Uploaded+Document", // Fixed typo: via.placeholder.com
                   createdAt: new Date().toISOString() // Fixed: should be string, not number
                 };
                 savePass(pass);
               }}
+              
               onRepeatedVisitorSubmit={handleRepeatedVisitorSubmit} // Pass the callback for repeated visitors
+              
             />
           </div>
 
