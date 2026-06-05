@@ -140,12 +140,13 @@ export function RepeatedVisitorsProvider({ children }: { children: ReactNode }) 
 
   // EDITED: Implement addMasterVisitor function
   const addMasterVisitor = (visitor: Visitor) => {
-    const exists = masterVisitors.some(v => v.id === visitor.id);
+    // Check if visitor already exists by name (case-insensitive)
+    const exists = masterVisitors.some(v => v.name.toLowerCase() === visitor.name.toLowerCase());
     if (!exists) {
       setMasterVisitors(prev => [visitor, ...prev]);
       console.log('New master visitor added:', visitor);
     } else {
-      console.warn(`Visitor with ID ${visitor.id} already exists`);
+      console.warn(`Visitor with name ${visitor.name} already exists in master registry`);
     }
   };
 

@@ -165,6 +165,25 @@ if (visitorCategory === 'repeated' && onRepeatedVisitorSubmit) {
   
   // Call the callback to add to repeated visitor history
   onRepeatedVisitorSubmit(newPassRecord);
+  
+  // For repeated visitors, skip the normal form submission
+  // Alert will be shown from the callback in EmployeeDashboard
+  
+  // Reset form
+  setName('');
+  setEmail('');
+  setDob('');
+  setPh('');
+  setIdRef('');
+  setAddress('');
+  setPurpose('');
+  setHeadCount(0);
+  setRequestedDate('');
+  setVisitorCategory('new');
+  setClearanceLevel('Level 1');
+  setEscortList([]);
+  setUploadedFile(null);
+  return; // Exit early for repeated visitors
 }
 
     alert('Form submitted successfully!');

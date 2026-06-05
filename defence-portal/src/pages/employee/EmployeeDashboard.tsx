@@ -12,8 +12,9 @@ import { useRepeatedVisitors } from '../../contexts/RepeatedVisitorsContext';
 
 export default function EmployeeDashboard() {
 
-  const { addNewVisitRecord } = useRepeatedVisitors(); // Fixed: changed from useNewVisitRecord to addNewVisitRecord
+  const { addNewVisitRecord, addMasterVisitor, isRepeatedVisitor } = useRepeatedVisitors(); // Fixed: changed from useNewVisitRecord to addNewVisitRecord
   const location = useLocation();
+  const alertShownRef = useRef(false); // Track if alert has been shown
   console.log(location.state);
   const [autoFillData, setAutoFillData] = useState<any>(null);
 
@@ -21,10 +22,11 @@ export default function EmployeeDashboard() {
     // we check for 'autofillData' because that's what RepeatedVisitorPage.tsx sends
     const autofillData = (location.state as any)?.autofillData || (location.state as any)?.autoFillData;
 
-    if (autofillData) {
+    if (autofillData && !alertShownRef.current) {
       console.log("Received autofill data:", autofillData);
       setAutoFillData(autofillData);
-      alert(`Security core: Profile verified for ${autofillData.name}. Injecting identity registry credentials.`)
+      alert(`Security core: Profile verified for ${autofillData.name}. Injecting identity registry credentials.`);
+      alertShownRef.current = true; // Mark alert as shown
 
       // clean the state so it doesnt refil on refresh
       window.history.replaceState({}, document.title);
@@ -93,9 +95,30 @@ export default function EmployeeDashboard() {
     liveStatus: newRecord.liveStatus || "Pre-cleared",
     type: newRecord.type || "repeated"
   };
+    
+    // Add to visitation history
     addNewVisitRecord(newRecord);
-     console.log('New repeated visitor record added to global history:', validatedRecord);
-  alert(`Repeated visitor record added for ${validatedRecord.holderName}. You can view it in the Repeated Visitor Registry.`);
+    
+    // Check if this visitor already exists in the master registry
+    // Only add to master registry if they don't already exist (by name)
+    if (!isRepeatedVisitor(newRecord.holderName)) {
+      // Only create and add to master visitors registry if they are NEW
+      const masterVisitor: Visitor = {
+        id: `DEF-M${Math.floor(1000 + Math.random() * 9000)}`,
+        name: newRecord.holderName,
+        purpose: newRecord.purpose,
+        requestTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        type: 'Repeated Visitor',
+        status: 'Cleared'
+      };
+      addMasterVisitor(masterVisitor);
+      console.log('New master visitor added to registry:', masterVisitor);
+    } else {
+      console.log(`Visitor ${newRecord.holderName} already exists in master registry. Only adding to visitation history.`);
+    }
+    
+    console.log('New repeated visitor record added to global history:', validatedRecord);
+    // Silent submission - autofill alert already notified the user
 };
 
   return (

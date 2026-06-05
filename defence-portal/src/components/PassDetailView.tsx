@@ -62,7 +62,7 @@ export default function PassDetailView({ pass }: PassDetailViewProps) {
             <label className="block text-xs uppercase tracking-wider text-gray-500">
               Phone Number
             </label>
-            <p className="text-gray-300 text-sm font-mono">{pass.ph}</p>
+            <p className="text-gray-300 text-sm font-mono">{pass.phoneNumber}</p>
           </div>
         </div>
 

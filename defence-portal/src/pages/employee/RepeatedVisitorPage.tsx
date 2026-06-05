@@ -35,6 +35,7 @@ export default function RepeatedVisitorsPage() {
       name: visitor.name,
       email: historyEntry.email || `${(visitor.name ?? 'unknown').toLowerCase().replace(/\s+/g, '')}@defence.gov.in`, 
       dob: historyEntry.dob || '1996-08-24', 
+      ph: historyEntry.phoneNumber || '', // Add phone number
       idRef: historyEntry.value || 'AADH-8839-2041-9920', 
       address: historyEntry.address || 'Hangar Block 4, Defense Corridor, Phase II, Bengaluru',
       purpose: historyEntry.purpose || visitor.purpose,
