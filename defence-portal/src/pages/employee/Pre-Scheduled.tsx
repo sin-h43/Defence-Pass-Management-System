@@ -191,6 +191,10 @@ export default function PreSched() {
                       <label className="block text-xs uppercase tracking-wider text-gray-500">Email Address</label>
                       <p className="text-gray-300 text-sm font-mono">{selectedPass.email || 'N/A'}</p>
                     </div>
+                     <div>
+                      <label className="block text-xs uppercase tracking-wider text-gray-500">DOB</label>
+                      <p className="text-gray-300 text-sm font-mono">{selectedPass.dob || 'N/A'}</p>
+                    </div>
                     </div>
 
                   <div className="grid grid-cols-2 gap-4 border-t border-gray-800/60 pt-4">

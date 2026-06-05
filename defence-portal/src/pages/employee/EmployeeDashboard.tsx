@@ -12,6 +12,14 @@ import { useRepeatedVisitors } from '../../contexts/RepeatedVisitorsContext';
 
 export default function EmployeeDashboard() {
 
+  const visitorTypeLabels = {
+  "hr": "HR-Related Visit",
+  "new": "New Visitor/Urgent Access",
+  "repeated": "Repeated Visitor",
+  "repeat": "Repeated Visitor",
+  "scheduled": "Pre-scheduled Visit"
+};
+
   const { addNewVisitRecord } = useRepeatedVisitors(); // Fixed: changed from useNewVisitRecord to addNewVisitRecord
   const location = useLocation();
   console.log(location.state);
@@ -383,8 +391,7 @@ export default function EmployeeDashboard() {
                   clearanceLevel: newVisitorData.clearanceLevel || "Level 1",
                   escortList: newVisitorData.escortList || [],
                   escortedManifest: newVisitorData.headCount > 0 ? `+${newVisitorData.headCount} Escorted` : "None (Solo)",
-                  type: newVisitorData.visitorType === "hr" ? "HR-Related Visit" : "New Visitor/Urgent Access",
-                  liveStatus: newVisitorData.visitorCategory === "scheduled"
+                  type: visitorTypeLabels[newVisitorData.visitorType?.toLowerCase() as keyof typeof visitorTypeLabels] || "General Visit",                  liveStatus: newVisitorData.visitorCategory === "scheduled"
                     ? "Awaiting Arrival" : "Pending Clearance",
                   requestedDate: newVisitorData.requestedDate || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
                   fileUrl: "https://via.placeholder.com/400x250?text=Uploaded+Document", // Fixed typo: via.placeholder.com

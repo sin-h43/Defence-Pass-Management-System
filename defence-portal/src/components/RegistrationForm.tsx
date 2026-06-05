@@ -106,7 +106,7 @@ export default function RegistrationForm({
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit =async (e: React.FormEvent) => {
     e.preventDefault();
 
     //validation check
@@ -183,7 +183,7 @@ if (visitorCategory === 'repeated' && onRepeatedVisitorSubmit) {
     setPurpose('');
     setHeadCount(0);
     setRequestedDate('');
-    setVisitorCategory('urgent' as VisitorCategory); // Match whatever your form's default starting tab is
+    setVisitorCategory('new'); // Match whatever your form's default starting tab is
     setClearanceLevel('Level 1');
     setEscortList([]); // Reset escort list
     setUploadedFile(null); // Clears the file/drag & drop upload zone
