@@ -1,4 +1,4 @@
-//Resuable Status Badges
+//Reusable Status Badges
 interface StatusBadgeProps {
     status: string;
 }
@@ -20,8 +20,9 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
                 return 'bg-emerald-500/20 border-emerald-500 text-emerald-400 font-semibold shadow-md';
             case 'level 2':
                 return 'bg-amber-500/20 border-amber-500 text-amber-400 font-semibold shadow-md';
+            // EDITED: Fixed malformed CSS string that had typos and merged class names
             case 'level 3':
-                return 'bg-red-500/10 text-red-400 border-redbg-rose-500/20 border-rose-500 text-rose-400 font-semibold shadow-md-500/20';
+                return 'bg-red-500/10 text-red-400 border-red-500/20 font-semibold shadow-md';
                 
             default:
                 return 'bg-gray-800 text-gray-400 border-transparent';

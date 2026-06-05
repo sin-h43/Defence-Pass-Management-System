@@ -1,26 +1,17 @@
 export interface Visitor {
-    id?:string;
-    name?: string;
-    status?:string;
-
-    [key:string]:any;
+  id: string;
+  name: string;
+  purpose?: string;
+  requestTime?: string;
+  type: string;
+  status?: string;
 }
-/**
- * Filters an array of visitor records strictly by Visitor Name or ID string.
- * @param logs - The raw array of visitor data objects.
- * @param query - The search string input by the user.
- * @returns The filtered subset of visitors.
- */
 
-export const filterByIdentityAndId = (logs: Visitor[], query: string):Visitor[]=>
-{
-    const sanitizedQuery = query?.toLocaleLowerCase().trim();
-    if(!sanitizedQuery) return logs;
-
-    return logs.filter((visitor:Visitor)=>{
-        const matchesID = visitor.id?.toLocaleLowerCase().includes(sanitizedQuery);
-        const matchesName = visitor.name?.toLocaleLowerCase().includes(sanitizedQuery);
-
-        return !!(matchesID||matchesName);
-    });
-};     
+export const filterByIdentityAndId = (visitors: Visitor[], query: string): Visitor[] => {
+  if (!query.trim()) return visitors;
+  const q = query.toLowerCase();
+  return visitors.filter(v => 
+    v.name?.toLowerCase().includes(q) || 
+    v.id?.toLowerCase().includes(q)
+  );
+};

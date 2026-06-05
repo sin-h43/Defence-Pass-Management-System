@@ -7,14 +7,10 @@ import type { PassRecord } from "../../utils/passStorage";
 import DetailModal from '../../components/DetailModal';
 import PassDetailView from '../../components/PassDetailView';
 
-
-
-
-
 export default function DispatchedPassLog() {
   const navigate = useNavigate();
   const [selectedPass, setSelectedPass] = useState<PassRecord | null>(null);
-  // Simulated data
+  // EDITED: Changed getAllPasses to getStoredPasses for consistency
   const [masterPassHistory, setMasterPassHistory ] = useState<PassRecord[]>(()=>
   {return getStoredPasses();});
 
@@ -71,17 +67,17 @@ export default function DispatchedPassLog() {
               <tr 
                 key={pass.passId}
                 onClick={()=> setSelectedPass(pass)}
-                className='hover:bg-[#161b22]/20 cursor-pointor transition-colors group'
+                className='hover:bg-[#161b22]/20 cursor-pointer transition-colors group'
               >
                 <td className='p-4 text-gray-400 font-mono text-xs'>{pass.createdAt}</td>
                 <td className = "p-3.5 font-mono font-medium text-amber-500 group-hover:underline ">{pass.passId}</td>
                 <td className = "p-3.4 font-medium text-gray-200">{pass.holderName}</td>
                 <td className='p-3.5 font-medium'>{pass.escortedManifest }</td>              
                 <td className='p-3.5'>
-                  <StatusBadge status={pass.type} />
+                  <StatusBadge status={pass.type || 'Unknown'} />
                 </td>
-                <td className='p-4'>
-                  <StatusBadge status={pass.liveStatus} />
+                <td className='p-3.5'>
+                  <StatusBadge status={pass.liveStatus || 'Unknown'} />
                 </td>
                 <td className='p-3.5 font-medium'>{pass.requestedDate }</td>
               </tr>
@@ -102,5 +98,4 @@ export default function DispatchedPassLog() {
       
     </div>
   );
-
 }

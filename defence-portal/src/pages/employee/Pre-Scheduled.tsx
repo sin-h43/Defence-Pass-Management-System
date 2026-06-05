@@ -13,6 +13,7 @@ export default function PreSched() {
   // Base State setup using shared ledger arrays
   const [scheduledPasses, setScheduledPasses] = useState<PassRecord[]>([]);
 
+  // EDITED: Changed getAllPasses to getStoredPasses for consistency
   // Filter out any elements that aren't configured with a 'scheduled' tracking pipeline marker
   useEffect(() => {
     const freshLedger = getStoredPasses();

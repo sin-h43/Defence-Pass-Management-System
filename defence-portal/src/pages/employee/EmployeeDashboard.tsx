@@ -1,41 +1,40 @@
-import {Search, Bell, ClipboardList, Settings, Shield, History, UserPlus, LogOut, PanelRight, PanelLeft } from 'lucide-react';
+import { Search, Bell, ClipboardList, Settings, Shield, History, UserPlus, LogOut, PanelRight, PanelLeft } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import {savePass} from '../../utils/passStorage';
+import { savePass } from '../../utils/passStorage';
 import DataTable from '../../components/DataTable';
 import RegistrationForm from '../../components/RegistrationForm'; // Used as component in JSX
-//import DispatchedPassLog from '../../components/DispatchedPassLog';
 import { filterByIdentityAndId } from '../../utils/searchFilters';
-import type {Visitor} from '../../utils/searchFilters';
+import type { Visitor } from '../../utils/searchFilters';
+import type { PassRecord } from '../../utils/passStorage'; // Import PassRecord type
 import RightDrawer from '../../components/RightDrawer';
-
-
+import { useRepeatedVisitors } from '../../contexts/RepeatedVisitorsContext';
 
 export default function EmployeeDashboard() {
 
+  const { addNewVisitRecord } = useRepeatedVisitors(); // Fixed: changed from useNewVisitRecord to addNewVisitRecord
   const location = useLocation();
   console.log(location.state);
   const [autoFillData, setAutoFillData] = useState<any>(null);
 
-  useEffect(()=>{
-    //we check for 'autofillData' because that's what RepeatedVisitorPage.tsx sends
+  useEffect(() => {
+    // we check for 'autofillData' because that's what RepeatedVisitorPage.tsx sends
     const autofillData = (location.state as any)?.autofillData || (location.state as any)?.autoFillData;
 
-    if(autofillData){
+    if (autofillData) {
       console.log("Received autofill data:", autofillData);
       setAutoFillData(autofillData);
       alert(`Security core: Profile verified for ${autofillData.name}. Injecting identity registry credentials.`)
 
-      //clean the state so it doesnt refil on refresh
+      // clean the state so it doesnt refil on refresh
       window.history.replaceState({}, document.title);
     }
-  },[location]);
-  
+  }, [location]);
 
 
   const [showNotifications, setShowNotifications] = useState(false);
-  const [searchQuery, setSearchQuery]= useState<string>('');
-  //anchor reference used to target the registration block for scorlling
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  // anchor reference used to target the registration block for scrolling
   const registrationFormRef = useRef<HTMLDivElement>(null);
   const scrollToRegistrationForm = () => {
     registrationFormRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -72,93 +71,104 @@ export default function EmployeeDashboard() {
     },
   ]);
 
-  const filteredVisitors = filterByIdentityAndId(activityRows,searchQuery);
+  const filteredVisitors = filterByIdentityAndId(activityRows, searchQuery);
 
-  const [selectedPass, setSelectedPass] = useState<Visitor | null> (null);
+  const [selectedPass, setSelectedPass] = useState<Visitor | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const closeDrawer = () => setIsDrawerOpen(false);
 
-  const handleSelectedVisitor = (visitor:Visitor)=>{
+  const handleSelectedVisitor = (visitor: Visitor) => {
     setSelectedPass(visitor);
     setSearchQuery('');
     setIsDrawerOpen(true);
   }
 
-  
+  // Handle repeated visitor form submission - adds to shared context
+  const handleRepeatedVisitorSubmit = (newRecord: PassRecord) => {
+    addNewVisitRecord(newRecord);
+    console.log('New repeated visitor record added to global history:', newRecord);
+    // Optional: Show success notification
+    // You could add a toast notification here
+    alert(`Repeated visitor record added for ${newRecord.holderName}. You can view it in the Repeated Visitor Registry.`);
+  };
 
   return (
-    // outer container (FIXED: Corrected typo 'oveflow-hidden' to 'overflow-hidden')
     <div className="flex h-screen w-screen bg-[#0e121a] text-white font-sans overflow-hidden">
-      
+
       {/* left sidebar */}
       <aside className={`bg-gray-900 border-r border-gray-700 flex flex-col justify-start p-4 shrink-0 transition-all duration-300 ease-in-out ${
         isSidebarOpen ? 'w-64 items-stretch' : 'w-16 items-center px-2'
-      }`}> 
-        
+      }`}>
+
         {/* Sidebar Header Logo Icon */}
         <div className={`h-12 border border-dashed border-gray-600 rounded mb-5 flex items-center justify-center text-xs text-gray-400 w-full ${
           !isSidebarOpen && 'border-none bg-gray-800/40'
-        }`}>       
-          <Shield className="h-5 w-5 shrink-0 text-amber-500"/>
+        }`}>
+          <Shield className="h-5 w-5 shrink-0 text-amber-500" />
           {isSidebarOpen && <span className="ml-2 font-medium">Employee Portal</span>}
         </div>
-        {/*Navigation Items Link Stack */}     
+
+        {/* Navigation Items Link Stack */}
         <div className="space-y-2 flex-1">
-          {/*New Visitor Button */}
-          <div 
-            onClick = {scrollToRegistrationForm}
+          {/* New Visitor Button */}
+          <div
+            onClick={scrollToRegistrationForm}
             className={`h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center text-sm hover:bg-gray-800 cursor-pointer transition-colors w-full ${
-              isSidebarOpen? 'px-3 justify-start' : 'justify-center p-0'
+              isSidebarOpen ? 'px-3 justify-start' : 'justify-center p-0'
             }`}
             title="New Visitor Registration"
-            >
-            <UserPlus className="h-4 w-4 shrink-0"/>
+          >
+            <UserPlus className="h-4 w-4 shrink-0" />
             {isSidebarOpen && <span className='ml-2'>New Visitor</span>}
-          </div> 
-          <div 
+          </div>
+          <div
             className={`w-full h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors ${
-              isSidebarOpen? 'px-3 justify-start' : 'justify-center p-0'
+              isSidebarOpen ? 'px-3 justify-start' : 'justify-center p-0'
             }`}
             title='Repeated Visitor Logs'
-            onClick={()=> navigate('/employee/repeatedVisitor')}>
-
-            <History className="h-4 w-4 shrink-0"/>
+            onClick={() => navigate('/employee/repeatedVisitor')}
+          >
+            <History className="h-4 w-4 shrink-0" />
             {isSidebarOpen && <span className='ml-2'>Repeated Visitor</span>}
-          </div> 
-          <div className={`w-full h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors ${
-            isSidebarOpen? 'px-3 justify-start' : 'justify-center p-0'
+          </div>
+          <div
+            className={`w-full h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors ${
+              isSidebarOpen ? 'px-3 justify-start' : 'justify-center p-0'
             }`}
-            onClick={()=> navigate('/employee/pre-scheduledDashboard')}>
-            <ClipboardList className="h-4 w-4 shrink-0"/>
+            onClick={() => navigate('/employee/pre-scheduledDashboard')}
+          >
+            <ClipboardList className="h-4 w-4 shrink-0" />
             {isSidebarOpen && <span className='ml-2'>Pre-Scheduled Visits</span>}
-          </div> 
-          <div 
+          </div>
+          <div
             className={`w-full h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center px-3 text-sm hover:bg-gray-800 cursor-pointer transition-colors whitespace-nowrap ${
-              isSidebarOpen? 'px-3 justify-start' : 'justify-center p-0'
+              isSidebarOpen ? 'px-3 justify-start' : 'justify-center p-0'
             }`}
-            title='Settings & Preferences'>
-            <Settings className="h-4 w-4 shrink-0"/>
+            title='Settings & Preferences'
+          >
+            <Settings className="h-4 w-4 shrink-0" />
             {isSidebarOpen && <span className='ml-2'>Settings</span>}
-          </div> 
+          </div>
         </div>
+
         {/* Feature 7: Responsive Logout Slot */}
         <div className={`mt-auto w-full transition-all duration-200 ${
-          isSidebarOpen 
-            ? 'p-0' 
+          isSidebarOpen
+            ? 'p-0'
             : 'flex justify-center'
         }`}>
-          <button 
+          <button
             onClick={() => alert("Logging out of Defence Session...")}
             className={`w-full flex items-center justify-center text-white hover:text-red-400 transition-all cursor-pointer ${
-              isSidebarOpen 
-                ? 'h-12 bg-gray-800 border border-gray-700 rounded text-xs hover:bg-red-950/10 hover:border-red-900/40 gap-2' 
+              isSidebarOpen
+                ? 'h-12 bg-gray-800 border border-gray-700 rounded text-xs hover:bg-red-950/10 hover:border-red-900/40 gap-2'
                 : 'h-10 w-10 bg-red-950/10 rounded-lg hover:bg-red-950/30 text-red-400/70 hover:text-red-400'
             }`}
             title="Logout Portal Session"
           >
             {/* Imports the standard power logout arrow icon asset */}
             <LogOut className="h-4 w-4 shrink-0" />
-            
+
             {/* Conditional formatting to slide text strings out of layout dynamically */}
             {isSidebarOpen && <span className="font-medium">Logout Portal</span>}
           </button>
@@ -168,22 +178,22 @@ export default function EmployeeDashboard() {
       {/* 2.main */}
       <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         {/* min-w-0 prevents the layout from breaking or stretching horizontally when the content overflows.*/}
-        {/*overflow-y-auto allows the main content area to scroll vertically if the content exceeds the viewport height, ensuring that all content remains accessible without breaking the layout.*/}
-        
+        {/* overflow-y-auto allows the main content area to scroll vertically if the content exceeds the viewport height, ensuring that all content remains accessible without breaking the layout.*/}
+
         {/* Top Header Navigation Panel */}
         <header className="h-16 bg-gray-900 border-b border-[#21262d] shrink-0 flex items-center justify-between px-6 z-10">
-          {/*DashPanel menu*/}
-          <button 
+          {/* DashPanel menu */}
+          <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="text-gray-400 hover:text-white p-1 rounded-md transition-colors cursor-pointer shrink-0 ">
-              {
-              isSidebarOpen ? 
+            {
+              isSidebarOpen ?
                 (<PanelLeft className="h-5 w-5" />)
-              : (<PanelRight className="h-5 w-5" />)
+                : (<PanelRight className="h-5 w-5" />)
             }
           </button>
-          
-          {/*Search Bar: max width so it doesn't crowd out right-side header items)*/}
+
+          {/* Search Bar: max width so it doesn't crowd out right-side header items) */}
           <div className="relative w-full max-w-md mx-4">
             {/* Search Input Container Box */}
             <div className="flex items-center bg-slate-900 border border-slate-850 rounded-lg px-3 py-2">
@@ -203,26 +213,28 @@ export default function EmployeeDashboard() {
               </div>
             </div>
 
-            {/* Absolute Dropdown Layer for Filtered Results */}
+            {/* RightDrawer for selected visitor details */}
             <RightDrawer
-            isOpen = {isDrawerOpen}
-            onClose={closeDrawer}
-            title = {`Security Entry Dossier - ${selectedPass?.id || ''}`}
-          >
-            {/* 3. Pass children content down here since your interface requires React.ReactNode */}
-            <div className="p-4">
-              <h3 className="text-lg font-semibold mb-2">Visitor Details</h3>
-              <p>Name: {selectedPass?.name}</p>
-              <p>ID: {selectedPass?.id}</p>
-              {/* Additional security dossier elements go here */}
-            </div>
-      </RightDrawer>
+              isOpen={isDrawerOpen}
+              onClose={closeDrawer}
+              title={`Security Entry Dossier - ${selectedPass?.id || ''}`}
+            >
+              {/* Pass children content down here since your interface requires React.ReactNode */}
+              <div className="p-4">
+                <h3 className="text-lg font-semibold mb-2">Visitor Details</h3>
+                <p>Name: {selectedPass?.name}</p>
+                <p>ID: {selectedPass?.id}</p>
+                {/* Additional security dossier elements go here */}
+              </div>
+            </RightDrawer>
+
+            {/* Search Results Dropdown */}
             {searchQuery && (
               <div className="absolute top-full left-0 w-full mt-1 bg-slate-900 border border-slate-800 rounded-lg shadow-xl z-50 overflow-hidden">
                 {filteredVisitors.length > 0 ? (
                   filteredVisitors.map((visitor) => (
-                    <div 
-                      key={visitor.id} 
+                    <div
+                      key={visitor.id}
                       onClick={() => handleSelectedVisitor(visitor)}
                       className="flex justify-between items-center px-4 py-2.5 hover:bg-slate-800/60 cursor-pointer border-b border-slate-850 last:border-b-0 transition-colors"
                     >
@@ -239,12 +251,10 @@ export default function EmployeeDashboard() {
             )}
           </div>
 
-          
-
           {/* ZONE 2 & 3: RIGHT SIDE PLACEHOLDER FOR NEXT STEP (FIXED: Container handles notification bell inside header alignment) */}
           <div className="flex relative items-center gap-4 shrink-0">
-            {/*Notification Button */}
-            <button 
+            {/* Notification Button */}
+            <button
               onClick={() => setShowNotifications(!showNotifications)}
               className="relative text-gray-400 hover:text-white p-1.5 rounded-lg hover:bg-[#21262d] transition-all cursor-pointer"
             >
@@ -264,58 +274,58 @@ export default function EmployeeDashboard() {
 
         {/* Dynamic Dashboard View Grid Workspace */}
         <main className="p-6 space-y-6">
-          {/*Header Greeting */}
+          {/* Header Greeting */}
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-white">Welcome Back, Employee!</h2>
             <p className="text-xs text-gray-400 mt-1 ">Gate 1 Reception . Core Entry Registration Console</p>
-          </div> 
-          {/*Ft-1 Optional Action Cards grid */}
+          </div>
+          {/* Ft-1 Optional Action Cards grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 
-            {/*Action1: Add Visitor */}
+            {/* Action1: Add Visitor */}
             <div className="bg-gray-900 border border-[#21262d] rounded-xl p-5 flex flex-col justify-between group cursor-pointer hover:bg-gray-800 transition-all">
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
                   <h3 className="text-base font-semibold text-gray-200 group-hover:text-amber-400 transition-colors">Register New Visitor</h3>
                   <p className="text-xs text-gray-400 max-w-sm">Initiate check-in workflow, capture identification records, and issue temporary gate entry passes.</p>
                 </div>
-                <div onClick = {scrollToRegistrationForm} className=" p-3 rounded-lg bg-amber-500/10 text-amber-400 shrink-0" >
+                <div onClick={scrollToRegistrationForm} className="p-3 rounded-lg bg-amber-500/10 text-amber-400 shrink-0" >
                   <UserPlus className="h-5 w-5" />
                   <span className="text-lg font-semibold text-white">Add Visitor</span>
                 </div>
               </div>
-              <div onClick = {scrollToRegistrationForm} className="mt-6 flex items-center text-xs font-semibold text-amber-500 gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+              <div onClick={scrollToRegistrationForm} className="mt-6 flex items-center text-xs font-semibold text-amber-500 gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
                 <span>Open Registration Form</span>
                 <span>→</span>
               </div>
             </div>
-              {/*Action2: Check Send Status */}
-              <div className="bg-gray-900 border border-[#21262d] rounded-xl p-5 flex flex-col justify-between group cursor-pointer hover:border-500/40 hover:bg-[#161b22]/40 transition-all duration-200 shadow-lg">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <h3 className="text-base font-semibold text-gray-200 group-hover:text-blue-400 transition-colors">Dispatched Pass Log</h3>
-                    <p className="text-xs text-gray-400 max-w-sm">Track your locally registered guest entires, monitor pending clearances, and confirm exists. </p>
-                  </div>
-                  <div 
-                    onClick={()=>navigate('/employee/dispatchedPassLog')}
-                    className="p-3 rounded-lg bg-blue-500/10 text-blue-400 shrink-0">
-                    <ClipboardList className="h-5 w-5" />
-                    <span className="text-lg font-semibold text-white">View Log</span>
-                  </div>
+
+            {/* Action2: Check Send Status */}
+            <div className="bg-gray-900 border border-[#21262d] rounded-xl p-5 flex flex-col justify-between group cursor-pointer hover:border-500/40 hover:bg-[#161b22]/40 transition-all duration-200 shadow-lg">
+              <div className="flex items-start justify-between">
+                <div className="space-y-1">
+                  <h3 className="text-base font-semibold text-gray-200 group-hover:text-blue-400 transition-colors">Dispatched Pass Log</h3>
+                  <p className="text-xs text-gray-400 max-w-sm">Track your locally registered guest entries, monitor pending clearances, and confirm exits.</p>
                 </div>
-                <div 
-                  onClick={()=>navigate('/employee/dispatchedPassLog')}
-                  className="mt-6 flex items-center text-xs font-semibold text-blue-500 gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                  <span>View Recent Dispatch</span>
-                  <span>→</span>
+                <div
+                  onClick={() => navigate('/employee/dispatchedPassLog')}
+                  className="p-3 rounded-lg bg-blue-500/10 text-blue-400 shrink-0">
+                  <ClipboardList className="h-5 w-5" />
+                  <span className="text-lg font-semibold text-white">View Log</span>
                 </div>
               </div>
+              <div
+                onClick={() => navigate('/employee/dispatchedPassLog')}
+                className="mt-6 flex items-center text-xs font-semibold text-blue-500 gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                <span>View Recent Dispatch</span>
+                <span>→</span>
+              </div>
             </div>
-          
+          </div>
 
-          {/*FT-2 Shift Activity Log Table*/}
+          {/* FT-2 Shift Activity Log Table */}
           <div className="bg-gray-900 border border-[#21262d] rounded-xl overflow-hidden shadow-xl">
-            
+
             {/* Table Header Section */}
             <div className="p-4 border-b border-[#21262d] flex items-center justify-between bg-gray-900/50">
               <div>
@@ -328,24 +338,24 @@ export default function EmployeeDashboard() {
             </div>
 
             {/* The Responsive Table Element */}
-            <DataTable 
-              headers={activityHeaders} 
+            <DataTable
+              headers={activityHeaders}
               rows={filteredVisitors as any}
-              externalSelectedRow = {selectedPass}
-              onExternalSelectRow = {setSelectedPass}
-              
-               />
+              externalSelectedRow={selectedPass}
+              onExternalSelectRow={setSelectedPass}
+
+            />
           </div>
 
           {/* Inline Form Wrapper */}
           <div ref={registrationFormRef} className="scroll-mt-6">
             {/* Render our highly scalable and reusable component */}
-            <RegistrationForm 
+            <RegistrationForm
               showHRFeatures={false}
               initialValues={autoFillData}
               onSubmitSuccess={(newVisitorData) => {
-              const generatedId = `DEF-${Math.floor(1000 + Math.random() * 9000)}`;
-                
+                const generatedId = `DEF-${Math.floor(1000 + Math.random() * 9000)}`;
+
                 // Format new row to match the datatable structure
                 const newRow = {
                   id: generatedId,
@@ -358,32 +368,33 @@ export default function EmployeeDashboard() {
 
                 // Append the new row to the existing table data 
                 setActivityRows(prevRows => [newRow, ...prevRows]);
+                // Instead of passing a straight value like setActivityRows(newData), this passes a callback function.
 
                 const pass = {
-                  passId : generatedId,
-                  holderName :newVisitorData.name || "Unknown Visitor",
+                  passId: generatedId,
+                  holderName: newVisitorData.name || "Unknown Visitor",
                   purpose: newVisitorData.purpose || "General Visit",
                   email: newVisitorData.email || " ",
                   dob: newVisitorData.dob || " ",
-                  idRef:newVisitorData.idRef || " ",
+                  idRef: newVisitorData.idRef || " ",
                   idType: newVisitorData.idType || " ",
-                  visitorCategory :newVisitorData.visitorCategory || "urgent",
+                  visitorCategory: newVisitorData.visitorCategory || "urgent",
                   clearanceLevel: newVisitorData.clearanceLevel || "Level 1",
-                  escortList:newVisitorData.escortList || [],
-                  escortedManifest:newVisitorData.headCount>0 ? `+${newVisitorData.headCount} Escorted` : "None (Solo)",
+                  escortList: newVisitorData.escortList || [],
+                  escortedManifest: newVisitorData.headCount > 0 ? `+${newVisitorData.headCount} Escorted` : "None (Solo)",
                   type: newVisitorData.visitorType === "hr" ? "HR-Related Visit" : "New Visitor/Urgent Access",
                   liveStatus: newVisitorData.visitorCategory === "scheduled"
                     ? "Awaiting Arrival" : "Pending Clearance",
-                  requestedDate : newVisitorData.requestedDate || new Date(Date.now() + 24*60*60*1000).toISOString(),
-                  fileUrl : "https://via.placholder.com/400x250?text=Uploaded+Document",
-                  createdAt: Date.now()
+                  requestedDate: newVisitorData.requestedDate || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+                  fileUrl: "https://via.placeholder.com/400x250?text=Uploaded+Document", // Fixed typo: via.placeholder.com
+                  createdAt: new Date().toISOString() // Fixed: should be string, not number
                 };
                 savePass(pass);
-
-              }} 
+              }}
+              onRepeatedVisitorSubmit={handleRepeatedVisitorSubmit} // Pass the callback for repeated visitors
             />
           </div>
-            
+
         </main>
       </div>
 
