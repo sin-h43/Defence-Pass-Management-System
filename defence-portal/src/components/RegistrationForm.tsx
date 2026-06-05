@@ -19,6 +19,7 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [dob, setDob] = useState('');
+    const [ph,setPh] = useState('');
     const [idRef, setIdRef] = useState('');
     const [address, setAddress] = useState('');
     const [purpose, setPurpose] = useState('');
@@ -43,6 +44,7 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
             setName(initialValues.name || '');
             setEmail(initialValues.email || '');
             setDob(initialValues.dob || '');
+            setPh(initialValues.ph || '');
             setIdRef(initialValues.idRef || '');
             setAddress(initialValues.address || '');
             setPurpose(initialValues.purpose || '');
@@ -105,6 +107,7 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
         name,
         email,
         dob,
+        ph,
         idRef,
         idType,
         address,
@@ -120,6 +123,7 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
     setName('');
     setEmail('');
     setDob('');
+    setPh('');
     setIdRef('');
     setAddress('');
     setPurpose('');
@@ -261,33 +265,59 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                     className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-amber-500"
                   />
                 </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-gray-300 font-medium">Govt Issued ID Ref *</label>
+                  <input
+                      type="text"
+                      required
+                      // Pinned maximum limit directly on the DOM element wrapper
+                      maxLength={12} 
+                      value={idRef}
+                      // Strips spaces, hyphens, and symbols so they don't eat into your max length limit
+                      onChange={(e) => {
+                        const {value, idType} = detectedGovtIdType(e.target.value);
+                        setIdRef(value);
+                        setIdType(idType);
+                      }}
+                      onBlur={()=>{
+                        if(idType === 'Incomplete / Invalid'){
+                          alert('Invalid ID Format! Please enter a valid 12-Digit Aadhaar or alpha-numeric PAN.')
+                          setIdRef('');
+                          setIdType('');
+                        }
+                      }}
+                      placeholder="12-Digit Aadhaar / Alpha-Numeric PAN"
+                      className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500 text-gray-200 focus:bg-[#12161d]"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="block text-gray-300 font-medium">Phone Number</label>
+                  <input
+                    type="tel"
+                    required 
+                    placeholder="+91 9066224569"
+                    value={ph}
+                    onChange={(e) => {
+                      // Remove everything except digits
+                      let value = e.target.value.replace(/\D/g, '');
+                      
+                      // Limit to 10 digits (after +91)
+                      if (value.length > 10) value = value.slice(0, 10);
+                      
+                      setPh(value);
+                    }}
+                    className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+
               </div>
 
               {/* Govt ID with Character Length Restrictions */}
-              <div className="space-y-1.5">
-                <label className="block text-gray-300 font-medium">Govt Issued ID Ref *</label>
-                <input
-                    type="text"
-                    required
-                    // Pinned maximum limit directly on the DOM element wrapper
-                    maxLength={12} 
-                    value={idRef}
-                    // Strips spaces, hyphens, and symbols so they don't eat into your max length limit
-                    onChange={(e) => {
-                      const {value, idType} = detectedGovtIdType(e.target.value);
-                      setIdRef(value);
-                      setIdType(idType);
-                    }}
-                    onBlur={()=>{
-                      if(idType === 'Incomplete / Invalid'){
-                        alert('Invalid ID Format! Please enter a valid 12-Digit Aadhaar or alpha-numeric PAN.')
-                        setIdRef('');
-                        setIdType('');
-                      }
-                    }}
-                    placeholder="12-Digit Aadhaar / Alpha-Numeric PAN"
-                    className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 focus:outline-none focus:border-amber-500 text-gray-200 focus:bg-[#12161d]"
-                />
+              <div>
+
+              
+                
               </div>
               
               {/*Permanent Address / Agency Address */}
@@ -316,14 +346,14 @@ export default function RegistrationForm({ showHRFeatures = false, onSubmitSucce
                     max="10"
                     value={headCount === 0 ? '' : headCount}
                     onChange={(e) => {
-                      const val = e.target.value === '' ? 0 : parseInt(e.target.value);
+                      const val = e.target.value === '' ? 0 : parseInt(e.target.value); {/*"5"->5*/}
                       handleHeadCountChange(val);
                     }}
                     className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg px-3 py-2 text-gray-200 placeholder:text-gray-500 focus:outline-none focus:border-gray-500"
                     // required placeholder="Number of accompanying guests (0 if none)"
                   />
               </div>
-              {/*Dynamic Escorted Manifest Row Generator*/}
+              {/*Dynamic Escorted Manifest Row Generator: conditional rendering*/}
               {headCount > 0 && (
                 <div className="bg-[#161b22]/50 border border-[#21262d] rounded-lg p-4 space-y-3.5 animate-fade-in">
                   {/* Manifest Section Header */}

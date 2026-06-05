@@ -19,6 +19,9 @@ export interface PassRecord {
 }
 
 const STORAGE_KEY = "defence_dispatched_passes";
+// This is the "address" or "folder name" in the browser's memory.
+//  By defining it as a constant, you ensure that get and save are always 
+// looking at the exact same place, preventing typos that could lead to data loss.
 
 export const getStoredPasses = (): PassRecord[] => {
   try {
@@ -32,7 +35,7 @@ export const getStoredPasses = (): PassRecord[] => {
 export const savePass = (
   newPass: PassRecord
 ): PassRecord[] => {
-  const currentPasses = getStoredPasses();
+  const currentPasses = getStoredPasses(); //fetch exisiting
 
   const updated = [newPass, ...currentPasses];
 
