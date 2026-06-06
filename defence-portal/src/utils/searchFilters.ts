@@ -2,9 +2,10 @@ export interface Visitor {
   id: string;
   name: string;
   purpose?: string;
+  ph?:string;
   requestTime?: string;
   type: string;
-  status?: string;
+  liveStatus?: string;
 }
 
 export const filterByIdentityAndId = (visitors: Visitor[], query: string): Visitor[] => {

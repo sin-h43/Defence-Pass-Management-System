@@ -35,8 +35,8 @@ export default function RepeatedVisitorsPage() {
       name: visitor.name,
       email: historyEntry.email || `${(visitor.name ?? 'unknown').toLowerCase().replace(/\s+/g, '')}@defence.gov.in`, 
       dob: historyEntry.dob || '1996-08-24', 
-      ph: historyEntry.phoneNumber || '', // Add phone number
-      idRef: historyEntry.value || 'AADH-8839-2041-9920', 
+      ph: historyEntry.ph || historyEntry.phoneNumber || '',
+      idRef: historyEntry.idRef || historyEntry.value || 'AADH-8839-2041-9920', 
       address: historyEntry.address || 'Hangar Block 4, Defense Corridor, Phase II, Bengaluru',
       purpose: historyEntry.purpose || visitor.purpose,
       fileUrl: historyEntry.fileUrl || 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=400'

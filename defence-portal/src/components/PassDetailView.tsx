@@ -55,14 +55,14 @@ export default function PassDetailView({ pass }: PassDetailViewProps) {
               {pass.idType || "Government ID"}
             </label>
             <p className="text-gray-300 text-sm font-mono mt-0.5">
-              {pass.value || "No ID Number Provided"}
+              {pass.idRef || "No ID Number Provided"}
             </p>
           </div>
           <div>
             <label className="block text-xs uppercase tracking-wider text-gray-500">
               Phone Number
             </label>
-            <p className="text-gray-300 text-sm font-mono">{pass.phoneNumber}</p>
+            <p className="text-gray-300 text-sm font-mono">{pass.ph}</p>
           </div>
         </div>
 

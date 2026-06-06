@@ -58,8 +58,8 @@ export default function DispatchedPassLog() {
               <th className='p-3.5 border-r border-[#21262d]'>Holder Name</th>
               <th className='p-3.5 border-r border-[#21262d]'>Escorted Manifest</th>
               <th className='p-3.5 border-r border-[#21262d]'>Requested Type</th>
-              <th className='p-3.5 border-r border-[#21262d]'>Requested Date</th>
               <th className='p-3.5 border-r border-[#21262d]'>Status</th>
+              <th className='p-3.5 border-r border-[#21262d]'>Requested Date</th>
             </tr>
           </thead>
           <tbody className='divide-y divide-[#21262d] text-gray-300 text-sm'>
@@ -74,7 +74,7 @@ export default function DispatchedPassLog() {
                 <td className = "p-3.4 font-medium text-gray-200">{pass.holderName}</td>
                 <td className='p-3.5 font-medium'>{pass.escortedManifest }</td>              
                 <td className='p-3.5'>
-                  <StatusBadge status={pass.type || 'Unknown'} />
+                  <StatusBadge status={pass.visitorCategory || 'Unknown'} />
                 </td>
                 <td className='p-3.5'>
                   <StatusBadge status={pass.liveStatus || 'Unknown'} />

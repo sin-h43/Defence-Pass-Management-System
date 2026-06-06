@@ -61,7 +61,7 @@ export default function EmployeeDashboard() {
       purpose: 'Contractor Check-in',
       requestTime: '08:45 AM',
       type: 'New Visitor/Urgent Access',
-      status: 'Cleared',
+      liveStatus: 'Cleared',
     },
     {
       id: 'DEF-1002',
@@ -69,7 +69,7 @@ export default function EmployeeDashboard() {
       purpose: 'Vendor Delivery',
       requestTime: '09:15 AM',
       type: 'New Visitor/Urgent Access',
-      status: 'Pending Clearance',
+      liveStatus: 'Pending Clearance',
     },
   ]);
 
@@ -93,11 +93,11 @@ export default function EmployeeDashboard() {
     requestedDate: newRecord.requestedDate || new Date().toISOString(),
     escortList: newRecord.escortList || [],
     liveStatus: newRecord.liveStatus || "Pre-cleared",
-    type: newRecord.type || "repeated"
+    visitorCategory: newRecord.visitorCategory || newRecord.type || "repeated"
   };
     
     // Add to visitation history
-    addNewVisitRecord(newRecord);
+    addNewVisitRecord(validatedRecord);
     
     // Check if this visitor already exists in the master registry
     // Only add to master registry if they don't already exist (by name)
@@ -109,7 +109,7 @@ export default function EmployeeDashboard() {
         purpose: newRecord.purpose,
         requestTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         type: 'Repeated Visitor',
-        status: 'Cleared'
+        liveStatus: 'Cleared'
       };
       addMasterVisitor(masterVisitor);
       console.log('New master visitor added to registry:', masterVisitor);
@@ -395,14 +395,18 @@ export default function EmployeeDashboard() {
                   };
                   return typeMap[category?.toLowerCase()] || "General Visit";
                 };
+
+                const visitorTypeLabel = getVisitorTypeLabel(newVisitorData.visitorCategory);
+                const isScheduled = newVisitorData.visitorCategory === 'scheduled';
+                const determinedStatus = isScheduled ? "Awaiting Arrival":"Pending Clearance";
                 // Format new row to match the datatable structure
                 const newRow = {
                   id: generatedId,
                   name: newVisitorData.name || "Unknown Visitor",
                   purpose: newVisitorData.purpose || "General Visit",
                   requestTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                  type: newVisitorData.visitorType === "hr" ? "HR-Related Visit" : "New Visitor/Urgent Access",
-                  status: "Pending Clearance"
+                  type: visitorTypeLabel,                  
+                  liveStatus: determinedStatus
                 };
 
                 // Append the new row to the existing table data 
@@ -419,11 +423,13 @@ export default function EmployeeDashboard() {
                   idRef: newVisitorData.idRef || " ",
                   idType: newVisitorData.idType || " ",
                   ph: newVisitorData.ph || " ",
-                  visitorCategory: newVisitorData.visitorCategory || "urgent",
+                  type: visitorTypeLabel,
+                  visitorCategory: newVisitorData.visitorCategory || "new",
                   clearanceLevel: newVisitorData.clearanceLevel || "Level 1",
                   escortList: escortList,
                   escortedManifest: newVisitorData.headCount > 0 ? `+${newVisitorData.headCount} Escorted` : "None (Solo)",
-                  type: getVisitorTypeLabel(newVisitorData.visitorType || newVisitorData.visitorCategory),                  requestedDate: requestedDate,
+                  requestedDate: requestedDate,
+                  liveStatus: determinedStatus,
                   fileUrl: "https://via.placeholder.com/400x250?text=Uploaded+Document", // Fixed typo: via.placeholder.com
                   createdAt: new Date().toISOString() // Fixed: should be string, not number
                 };

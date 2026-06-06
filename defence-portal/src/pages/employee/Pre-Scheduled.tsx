@@ -18,7 +18,10 @@ export default function PreSched() {
   useEffect(() => {
     const freshLedger = getStoredPasses();
     const filtered = freshLedger.filter(
-      (pass: any) => pass.visitorCategory === "scheduled"
+      (pass) =>
+        pass.visitorCategory === "scheduled" ||
+        pass.type === "scheduled" ||
+        pass.type === "Pre-scheduled Visit"
     );
     setScheduledPasses(filtered);
   }, []);

@@ -19,8 +19,8 @@ const RepeatedVisitorsContext = createContext<RepeatedVisitorsContextType | unde
 
 // Master frequent flyers database
 const MASTER_REPEATED_VISITORS: Visitor[] = [
-  { id: 'DEF-M801', name: 'Sinchana K', purpose: 'System Audit', requestTime: '02:15 PM', type: 'Repeated Visitor', status: 'Cleared' },
-  { id: 'DEF-M802', name: 'Arya K', purpose: 'Equipment Delivery', requestTime: '11:00 AM', type: 'Repeated Visitor', status: 'Cleared' },
+  { id: 'DEF-M801', name: 'Sinchana K', purpose: 'System Audit', requestTime: '02:15 PM', type: 'Repeated Visitor', liveStatus: 'Cleared' },
+  { id: 'DEF-M802', name: 'Arya K', purpose: 'Equipment Delivery', requestTime: '11:00 AM', type: 'Repeated Visitor', liveStatus: 'Cleared' },
 ];
 
 // Mock historical logs database
@@ -30,6 +30,7 @@ const INITIAL_HISTORY: PassRecord[] = [
     holderName: 'Sinchana K',
     purpose: 'Core Server Room Infrastructure Patching',
     email: 'sinchana.k@defence.gov.in',
+    ph:'9999999999',
     dob: '1996-08-24',
     address: 'Hangar Block 4, Defense Corridor, Phase II, Bengaluru',
     clearanceLevel: 'Level 3',
@@ -40,13 +41,14 @@ const INITIAL_HISTORY: PassRecord[] = [
     createdAt: '2026-06-02T10:15:00Z',
     type: 'Repeated Visitor',
     idType: 'Aadhaar',
-    value: 'AADH-8839-2041-9920'
+    idRef: 'AADH-8839-2041-9920'
   },
   { 
     passId: 'DISPATCH-TRX41',
     holderName: 'Sinchana K',
     purpose: 'Quarterly Critical Firmware Audit',
     email: 'sinchana.k@defence.gov.in',
+    ph:'9999999999',
     dob: '1996-08-24',
     address: 'Hangar Block 4, Defense Corridor, Phase II, Bengaluru',
     clearanceLevel: 'Level 3',
@@ -57,7 +59,7 @@ const INITIAL_HISTORY: PassRecord[] = [
     createdAt: '2026-05-28T09:00:00Z',
     type: 'Repeated Visitor',
     idType: 'Aadhaar',
-    value: 'AADH-8839-2041-9920',
+    idRef: 'AADH-8839-2041-9920',
     escortList: [
       { name: 'Security Officer Smith', idRef: 'SEC-8821', idType: 'Service ID' }
     ]
@@ -67,6 +69,7 @@ const INITIAL_HISTORY: PassRecord[] = [
     holderName: 'Sinchana K',
     purpose: 'Emergency HVAC Component Diagnostic',
     email: 'sinchana.k@defence.gov.in',
+    ph:'9999999999',
     dob: '1996-08-24',
     address: 'Hangar Block 4, Defense Corridor, Phase II, Bengaluru',
     clearanceLevel: 'Level 2',
@@ -77,7 +80,7 @@ const INITIAL_HISTORY: PassRecord[] = [
     createdAt: '2026-05-14T16:30:00Z',
     type: 'Repeated Visitor',
     idType: 'Aadhaar',
-    value: 'AADH-8839-2041-9920',
+    idRef: 'AADH-8839-2041-9920',
     escortList: [
       { name: 'Technician John', idRef: 'TECH-4472', idType: 'Service ID' },
       { name: 'Engineer Sarah', idRef: 'ENG-9913', idType: 'Service ID' }

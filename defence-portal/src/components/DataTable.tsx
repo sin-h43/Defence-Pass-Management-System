@@ -57,9 +57,9 @@ export default function DataTable({ headers, rows, externalSelectedRow, onExtern
               <td className="p-3.5 font-medium text-gray-200">{row.name}</td>
               <td className="p-3.5 text-gray-400">{row.purpose}</td>
               <td className="p-3.5 text-gray-500">{row.requestTime}</td>
-              <td className="p-3.5 text-gray-400">{row.type}</td>
+              <td className="p-3.5 text-gray-400">{row.type || 'Unknown'}</td>
               <td className="p-3.5 text-right">
-                <StatusBadge status={row.status || 'Pending'} />
+                <StatusBadge status={row.liveStatus || 'Pending'} />
               </td>
             </tr>
           ))}
@@ -95,12 +95,12 @@ export default function DataTable({ headers, rows, externalSelectedRow, onExtern
 
   <div>
     <p className="text-gray-500 text-xs">Visitor Type</p>
-    <p>{selectedRow?.type}</p>
+    <p>{selectedRow?.type || 'Unknown'}</p>
   </div>
 
   <div>
     <p className="text-gray-500 text-xs">Status</p>
-    <p>{selectedRow?.status}</p>
+    <p>{selectedRow?.liveStatus}</p>
   </div>
 </div>
       </RightDrawer>
