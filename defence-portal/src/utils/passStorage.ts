@@ -12,9 +12,12 @@ export interface PassRecord {
   liveStatus?: string;
   fileUrl?: string;
   createdAt: string;
+  type?: string;
   visitorCategory?: string;
   idType?: string;
   idRef?: string;
+  value?: string;
+  phoneNumber?: string;
   escortList?: Array<{
     name: string;
     idRef: string;

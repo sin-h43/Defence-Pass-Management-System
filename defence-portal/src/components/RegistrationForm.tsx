@@ -115,6 +115,8 @@ export default function RegistrationForm({
       return;
     }
 
+    let repeatedPassRecord: PassRecord | null = null;
+
     // Create the form data object
     const formData = {
       name,
@@ -138,7 +140,7 @@ export default function RegistrationForm({
 
 // If this is a repeated visitor AND we have the callback, create a PassRecord
 if (visitorCategory === 'repeated' && onRepeatedVisitorSubmit) {
-  const newPassRecord: PassRecord = {
+  repeatedPassRecord = {
     passId: `DISPATCH-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
     holderName: name,
     purpose: purpose,
@@ -150,28 +152,35 @@ if (visitorCategory === 'repeated' && onRepeatedVisitorSubmit) {
       ? `Accompanied by ${escortList.length} escort(s)`
       : 'Single personnel, no escorts',
     // Use provided requestedDate when available; otherwise default to today's date
-    requestedDate: requestedDate ?? new Date().toISOString().split('T')[0],
-    liveStatus: 'Active',
+    requestedDate: requestedDate || new Date().toISOString(),
+    liveStatus: 'Pending Clearance',
     fileUrl: uploadedFile ? URL.createObjectURL(uploadedFile) : 'https://via.placeholder.com/400x250?text=Uploaded+Document',
     createdAt: new Date().toISOString(),
-    type: visitorCategory,
+    type: 'Repeated Visitor',
+    visitorCategory: 'repeated',
     idType: idType.trim() || 'Government ID',
+    idRef: idRef,
     value: idRef,
     ph: ph,
+    phoneNumber: ph,
     escortList: escortList.length > 0 ? escortList : undefined
   };
 
-  console.log('Creating new repeated visitor record:', newPassRecord);
+  console.log('Creating new repeated visitor record:', repeatedPassRecord);
   
   // Call the callback to add to repeated visitor history
-  onRepeatedVisitorSubmit(newPassRecord);
+  onRepeatedVisitorSubmit(repeatedPassRecord);
 }
-  
-    alert('Form submitted successfully!');
 
     if (onSubmitSuccess) {
-      onSubmitSuccess(formData);
+      onSubmitSuccess({ ...formData, repeatedPassRecord });
     }
+
+    alert(
+      visitorCategory === 'repeated'
+        ? 'Repeated visitor log created and added to the dispatch ledger.'
+        : 'Form submitted successfully!'
+    );
 
     // Reset form
     setName('');

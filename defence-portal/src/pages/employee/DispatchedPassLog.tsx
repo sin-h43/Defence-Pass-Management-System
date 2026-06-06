@@ -74,7 +74,7 @@ export default function DispatchedPassLog() {
                 <td className = "p-3.4 font-medium text-gray-200">{pass.holderName}</td>
                 <td className='p-3.5 font-medium'>{pass.escortedManifest }</td>              
                 <td className='p-3.5'>
-                  <StatusBadge status={pass.visitorCategory || 'Unknown'} />
+                  <StatusBadge status={pass.type || pass.visitorCategory || 'Unknown'} />
                 </td>
                 <td className='p-3.5'>
                   <StatusBadge status={pass.liveStatus || 'Unknown'} />

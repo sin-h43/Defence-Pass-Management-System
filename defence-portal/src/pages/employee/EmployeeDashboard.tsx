@@ -399,9 +399,11 @@ export default function EmployeeDashboard() {
                 const visitorTypeLabel = getVisitorTypeLabel(newVisitorData.visitorCategory);
                 const isScheduled = newVisitorData.visitorCategory === 'scheduled';
                 const determinedStatus = isScheduled ? "Awaiting Arrival":"Pending Clearance";
+                const repeatedPassRecord = newVisitorData.repeatedPassRecord as PassRecord | null | undefined;
+                const passId = repeatedPassRecord?.passId || generatedId;
                 // Format new row to match the datatable structure
                 const newRow = {
-                  id: generatedId,
+                  id: passId,
                   name: newVisitorData.name || "Unknown Visitor",
                   purpose: newVisitorData.purpose || "General Visit",
                   requestTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
@@ -414,25 +416,44 @@ export default function EmployeeDashboard() {
                 // Instead of passing a straight value like setActivityRows(newData), this passes a callback function.
                 const requestedDate = newVisitorData.requestedDate || new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
                 const escortList = newVisitorData.escortList || [];
-                const pass = {
-                  passId: generatedId,
-                  holderName: newVisitorData.name || "Unknown Visitor",
-                  purpose: newVisitorData.purpose || "General Visit",
-                  email: newVisitorData.email || " ",
-                  dob: newVisitorData.dob || " ",
-                  idRef: newVisitorData.idRef || " ",
-                  idType: newVisitorData.idType || " ",
-                  ph: newVisitorData.ph || " ",
-                  type: visitorTypeLabel,
-                  visitorCategory: newVisitorData.visitorCategory || "new",
-                  clearanceLevel: newVisitorData.clearanceLevel || "Level 1",
-                  escortList: escortList,
-                  escortedManifest: newVisitorData.headCount > 0 ? `+${newVisitorData.headCount} Escorted` : "None (Solo)",
-                  requestedDate: requestedDate,
-                  liveStatus: determinedStatus,
-                  fileUrl: "https://via.placeholder.com/400x250?text=Uploaded+Document", // Fixed typo: via.placeholder.com
-                  createdAt: new Date().toISOString() // Fixed: should be string, not number
-                };
+                const pass: PassRecord = repeatedPassRecord
+                  ? {
+                      ...repeatedPassRecord,
+                      passId,
+                      holderName: newVisitorData.name || repeatedPassRecord.holderName || "Unknown Visitor",
+                      purpose: newVisitorData.purpose || repeatedPassRecord.purpose || "General Visit",
+                      email: newVisitorData.email || repeatedPassRecord.email || " ",
+                      dob: newVisitorData.dob || repeatedPassRecord.dob || " ",
+                      idRef: newVisitorData.idRef || repeatedPassRecord.idRef || repeatedPassRecord.value || " ",
+                      idType: newVisitorData.idType || repeatedPassRecord.idType || " ",
+                      ph: newVisitorData.ph || repeatedPassRecord.ph || repeatedPassRecord.phoneNumber || " ",
+                      type: visitorTypeLabel,
+                      visitorCategory: newVisitorData.visitorCategory || repeatedPassRecord.visitorCategory || "repeated",
+                      clearanceLevel: newVisitorData.clearanceLevel || repeatedPassRecord.clearanceLevel || "Level 1",
+                      escortList: escortList,
+                      escortedManifest: newVisitorData.headCount > 0 ? `+${newVisitorData.headCount} Escorted` : repeatedPassRecord.escortedManifest || "None (Solo)",
+                      requestedDate,
+                      liveStatus: determinedStatus,
+                    }
+                  : {
+                      passId,
+                      holderName: newVisitorData.name || "Unknown Visitor",
+                      purpose: newVisitorData.purpose || "General Visit",
+                      email: newVisitorData.email || " ",
+                      dob: newVisitorData.dob || " ",
+                      idRef: newVisitorData.idRef || " ",
+                      idType: newVisitorData.idType || " ",
+                      ph: newVisitorData.ph || " ",
+                      type: visitorTypeLabel,
+                      visitorCategory: newVisitorData.visitorCategory || "new",
+                      clearanceLevel: newVisitorData.clearanceLevel || "Level 1",
+                      escortList: escortList,
+                      escortedManifest: newVisitorData.headCount > 0 ? `+${newVisitorData.headCount} Escorted` : "None (Solo)",
+                      requestedDate: requestedDate,
+                      liveStatus: determinedStatus,
+                      fileUrl: "https://via.placeholder.com/400x250?text=Uploaded+Document",
+                      createdAt: new Date().toISOString()
+                    };
                 savePass(pass);
               }}
               
