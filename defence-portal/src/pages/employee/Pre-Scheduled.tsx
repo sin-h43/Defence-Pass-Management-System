@@ -30,8 +30,8 @@ export default function PreSched() {
   const displayedPasses = scheduledPasses.filter((pass) => {
     const query = searchQuery.toLowerCase();
     return (
-      pass.holderName.toLowerCase().includes(query) ||
-      pass.passId.toLowerCase().includes(query) ||
+      pass.holderName?.toLowerCase().includes(query) ||
+      pass.passId?.toLowerCase().includes(query) ||
       (pass.purpose && pass.purpose.toLowerCase().includes(query))
     );
   });
