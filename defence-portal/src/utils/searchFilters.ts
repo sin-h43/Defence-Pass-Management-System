@@ -3,7 +3,7 @@ export interface Visitor {
   name: string;
   purpose?: string;
   ph?:string;
-  requestTime?: string;
+  requestedDate?: string;
   type: string;
   liveStatus?: string;
 }

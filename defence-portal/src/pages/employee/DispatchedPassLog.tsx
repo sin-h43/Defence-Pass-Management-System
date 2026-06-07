@@ -13,12 +13,25 @@ export default function DispatchedPassLog() {
   // EDITED: Changed getAllPasses to getStoredPasses for consistency
   const [masterPassHistory, setMasterPassHistory ] = useState<PassRecord[]>(()=>
   {return getStoredPasses();});
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   //sync the fresh strg ledger onto the screen on load
   useEffect(()=>{
     setMasterPassHistory(getStoredPasses());
   },[])
 
+  const filterPasses = (passes:PassRecord[], query:string): PassRecord[]=>{
+    if (!query.trim()) return passes;
+    const q = query.toLowerCase();
+    return passes.filter(pass =>
+      pass.holderName?.toLocaleLowerCase().includes(q) ||
+      pass.passId?.toLocaleLowerCase().includes(q) ||
+      pass.type?.toLocaleLowerCase().includes(q) ||
+      pass.visitorCategory?.toLocaleLowerCase().includes(q)
+    );
+  };
+
+  const filteredPasses = filterPasses(masterPassHistory, searchQuery);
 
   return (
     <div className ="min-h-screen p-6 relative bg-[#0e121a] px-0 py-0 " > {/*the entire card*/}
@@ -43,6 +56,8 @@ export default function DispatchedPassLog() {
             <input 
               type="text" 
               placeholder="Search visitors, requests, ID..." 
+              value={searchQuery}
+              onChange={(e)=> setSearchQuery(e.target.value)}
               className="w-full bg-gray-950/50 border border-[#30363d] rounded-lg pl-10 pr-16 py-1.5 text-sm text-gray-200 placeholder-gray-500 focus:outline-none focus:border-[#444c56] focus:bg-[#12161d] transition-all"
             />
         </div>
@@ -63,7 +78,7 @@ export default function DispatchedPassLog() {
             </tr>
           </thead>
           <tbody className='divide-y divide-[#21262d] text-gray-300 text-sm'>
-            {masterPassHistory.map((pass)=>(
+            {filteredPasses.map((pass)=>(
               <tr 
                 key={pass.passId}
                 onClick={()=> setSelectedPass(pass)}
@@ -82,6 +97,14 @@ export default function DispatchedPassLog() {
                 <td className='p-3.5 font-medium'>{pass.requestedDate }</td>
               </tr>
             ))}
+            {/*no match */}
+            {filteredPasses.length === 0 && (
+              <tr>
+                <td colSpan={7} className='p-8 text-center text-gray-500 italic'>
+                  No passes match "{searchQuery}"
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
