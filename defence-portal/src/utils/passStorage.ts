@@ -2,6 +2,7 @@ export interface PassRecord {
   passId: string;
   holderName: string;
   purpose: string;
+  createdAt: string;
   ph?:string;
   email?: string;
   dob?: string;
@@ -11,7 +12,6 @@ export interface PassRecord {
   requestedDate?: string;
   liveStatus?: string;
   fileUrl?: string;
-  createdAt: string;
   type?: string;
   visitorCategory?: string;
   idType?: string;

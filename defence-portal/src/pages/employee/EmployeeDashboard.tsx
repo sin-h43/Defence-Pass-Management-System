@@ -59,7 +59,7 @@ export default function EmployeeDashboard() {
       id: 'DEF-1001',
       name: 'John Doe',
       purpose: 'Contractor Check-in',
-      requestTime: '08:45 AM',
+      requestedDate: '09/05/2026 08:45 AM',
       type: 'New Visitor/Urgent Access',
       liveStatus: 'Cleared',
     },
@@ -67,7 +67,7 @@ export default function EmployeeDashboard() {
       id: 'DEF-1002',
       name: 'Jane Smith',
       purpose: 'Vendor Delivery',
-      requestTime: '09:15 AM',
+      requestedDate: '09/05/2026 09:15 AM',
       type: 'New Visitor/Urgent Access',
       liveStatus: 'Pending Clearance',
     },
@@ -107,7 +107,7 @@ export default function EmployeeDashboard() {
         id: `DEF-M${Math.floor(1000 + Math.random() * 9000)}`,
         name: newRecord.holderName,
         purpose: newRecord.purpose,
-        requestTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        requestedDate: newRecord.requestedDate|| new Date().toISOString(),
         type: 'Repeated Visitor',
         liveStatus: 'Cleared'
       };
