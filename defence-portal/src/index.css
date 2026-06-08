@@ -1,5 +1,12 @@
+/* @import "tailwindcss"; */
 @import "tailwindcss";
-@import "tailwindcss";
+
+:root{
+  --background: #070a12;
+  --foreground: #f8fafc;
+  --primary: #f59e0b; /* This is our amber color */
+  --border: #1e293b;
+}
 
 input:-webkit-autofill,
 input:-webkit-autofill:hover,

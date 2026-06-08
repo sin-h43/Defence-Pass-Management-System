@@ -5,13 +5,9 @@ import PreSched from './pages/employee/Pre-Scheduled.tsx';
 import RepeatedVisitorsPage from './pages/employee/RepeatedVisitorPage.tsx';
 import { RepeatedVisitorsProvider } from './contexts/RepeatedVisitorsContext'; // Import the provider
 
+import HRDashboard from './pages/hr/HrDashboard.tsx';
+
 //placeholder for HR n Security until we write their full code 
-const HRDashboard = () => (
-  <div className="p-8 text-white">
-    <h2 className="text-2xl font-bold ">HR Management</h2>
-    <p className="text-gray-400 mt-2">Authentication required.Gateway secure.</p>
-  </div>
-);
 
 const SecurityDashboard = () => (
   <div className="p-8 text-white">
@@ -45,7 +41,9 @@ function App() {
           <Route path="/security" element={<SecurityDashboard />} />
           
           {/* 6.HR Dashboard */}
-          <Route path="/hr" element={<HRDashboard />} />
+          <Route 
+          path="/hr" 
+          element={<HRDashboard />} />
           
           {/* Redirect to employee dashboard as default */}
           <Route path="/" element={<Navigate to="/employee" />} />
