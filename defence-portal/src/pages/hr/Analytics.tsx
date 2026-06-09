@@ -1,18 +1,7 @@
 import { ChevronLeft} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import KPICards from '@/components/KPICards';
-// Mock Data matching a Defense System environment
-// const peakHoursData = [
-//   { time: '06:00', visitors: 12 },
-//   { time: '08:00', visitors: 45 },
-//   { time: '10:00', visitors: 85 },
-//   { time: '12:00', visitors: 60 },
-//   { time: '14:00', visitors: 72 },
-//   { time: '16:00', visitors: 90 },
-//   { time: '18:00', visitors: 35 },
-//   { time: '20:00', visitors: 15 },
-// ];
-
+import PeakTrafficChart from '@/components/PeakTrafficChart';
 // const departmentCrowdData = [
 //   { name: 'Research Wing', count: 124, fill: '#6366f1' },
 //   { name: 'IT & Cyber', count: 98, fill: '#a855f7' },
@@ -56,9 +45,15 @@ export default function Analytics(){
             </div>
             <div className='p-6 text-white'>
               <KPICards/>
-              
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* Feature 1: Peak Traffic Area Chart - Now imported */}
+          <div className="lg:col-span-2">
+            <PeakTrafficChart />
+          </div>
+
             </div>
-            
+          </div>  
     </div>
     );
 
