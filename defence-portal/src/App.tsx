@@ -6,6 +6,8 @@ import RepeatedVisitorsPage from './pages/employee/RepeatedVisitorPage.tsx';
 import { RepeatedVisitorsProvider } from './contexts/RepeatedVisitorsContext'; // Import the provider
 
 import HRDashboard from './pages/hr/HrDashboard.tsx';
+import VisitorMgmt from './pages/hr/VisitorManagement.tsx';
+import Analytics from './pages/hr/Analytics.tsx';
 
 //placeholder for HR n Security until we write their full code 
 
@@ -44,6 +46,17 @@ function App() {
           <Route 
           path="/hr" 
           element={<HRDashboard />} />
+          <Route
+          path = "/hr/visitorMgmt"
+          element = {<VisitorMgmt/>}
+          />
+          <Route 
+          path="/hr" 
+          element={<HRDashboard />} />
+          <Route
+          path = "/hr/analytics"
+          element = {<Analytics/>}
+          />
           
           {/* Redirect to employee dashboard as default */}
           <Route path="/" element={<Navigate to="/employee" />} />

@@ -1,18 +1,19 @@
 import {cn} from '../lib/utils'
 import React, {useState} from 'react';
 import { LayoutDashboard,Users, FileText, ShieldAlert, UserCheck, Settings, LogOut, ChevronRight,Search, Bell, PanelLeft,PanelRight } from 'lucide-react';
-
+import { useNavigate } from 'react-router-dom';
 
 export default function DashboardLayout({children}: {children: React.ReactNode}){
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState("Dashboard")
     const [isPanelOpen, setIsPanelOpen] = useState(false)
 
     const navItems = [
-        {name:"Dashboard", icon: LayoutDashboard},
-        {name:"Visitor Management", icon: Users, hasSub:true},
-        {name:"Pass Requests", icon: FileText},
+        {name:"Dashboard", icon: LayoutDashboard },
+        {name:"Visitor Management", icon: Users, hasSub:true , path:'/hr/visitorMgmt'},
+        {name:"Analytics", icon: FileText, path:'/hr/analytics'},
         {name:"Security Alerts", icon:ShieldAlert},
-        {name:"Approvals", icon: UserCheck},
+        {name:"Audit Logs", icon: UserCheck},
         {name:"Settings", icon: Settings},
     ]
 
@@ -45,14 +46,22 @@ export default function DashboardLayout({children}: {children: React.ReactNode})
                 return(
                     <button
                         key={item.name}
-                        onClick={()=>setActiveTab(item.name)}
+                       onClick={() => {
+  // State setter is async, but putting it second ensures it gets queued
+  if (item.path) {
+    navigate(item.path);
+  }
+  setActiveTab(item.name); 
+}}
                         className={cn(
                           "group w-full h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center text-sm hover:bg-gray-800 cursor-pointer transition-colors",
               isActive ? 'px-3 justify-between' : 'justify-center p-0',
               !isPanelOpen && 'justify-center px-0'
               )}>
                 <div className="flex items-center gap-3">
-                    <Icon className={cn("h-4 w-4", isActive ? "text-amber-500" : "text-slate-400 group-hover:text-slate-200")} />
+                    <Icon 
+                      onClick={()=> {if(item.path) {item.path};}}
+                    className={cn("h-4 w-4" ,isActive ? "text-amber-500" : "text-slate-500 group-hover:text-slate-200")} />
                     {isPanelOpen && <span>{item.name}</span>}
                   </div>
                   {item.hasSub && isPanelOpen && (
