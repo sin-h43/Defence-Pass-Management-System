@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import KPICards from '@/components/KPICards';
 import PeakTrafficChart from '@/components/PeakTrafficChart';
 import ComplianceReporting from '@/components/ComplianceReporting';
+import DepartmentBarChart from '@/components/DepartmentBarChart';
 // const departmentCrowdData = [
 //   { name: 'Research Wing', count: 124, fill: '#6366f1' },
 //   { name: 'IT & Cyber', count: 98, fill: '#a855f7' },
@@ -52,6 +53,7 @@ export default function Analytics(){
           <div className="lg:col-span-2">
             <PeakTrafficChart />
           </div>
+          <DepartmentBarChart />
           <ComplianceReporting />
 
             </div>
