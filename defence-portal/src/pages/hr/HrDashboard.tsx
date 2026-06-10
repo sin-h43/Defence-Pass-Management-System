@@ -1,7 +1,7 @@
 import { cn } from '../../lib/utils'
 import DashboardLayout from '@/components/DashboardLayout';
 import { Users, UserX, UsersRound, UserCheck, UserPlus, UserSearch, File, ChevronRight } from 'lucide-react'
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getStoredPasses } from "../../utils/passStorage"
 import type { Visitor } from './../../utils/searchFilters';
 import DataTable from '@/components/DataTable';

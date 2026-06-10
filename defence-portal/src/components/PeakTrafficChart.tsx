@@ -13,7 +13,11 @@ const peakHoursData = [
   { time: '20:00', visitors: 15 },
 ];
 
-export default function PeakTrafficChart(): React.JSX.Element {
+interface PeakTrafficChartProps{
+  dateRange?: {start:string; end:string};
+}
+
+export default function PeakTrafficChart({dateRange}:PeakTrafficChartProps): React.JSX.Element {
   return (
     <div className="bg-slate-900/40 border border-slate-800 rounded-xl p-5">
       <div className="mb-4">
@@ -22,6 +26,11 @@ export default function PeakTrafficChart(): React.JSX.Element {
         </h4>
         <p className="text-xs text-slate-400">
           Identifies high-density intervals across entry checkpoints.
+          {dateRange?.start && dateRange?.end && (
+            <span className='block text-amber-400 mt-1'>
+              Filtered: {dateRange.start} to {dateRange.end}
+            </span>
+          )}
         </p>
       </div>
       

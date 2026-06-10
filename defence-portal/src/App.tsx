@@ -50,14 +50,10 @@ function App() {
           path = "/hr/visitorMgmt"
           element = {<VisitorMgmt/>}
           />
-          <Route 
-          path="/hr" 
-          element={<HRDashboard />} />
           <Route
           path = "/hr/analytics"
           element = {<Analytics/>}
-          />
-          
+          />          
           {/* Redirect to employee dashboard as default */}
           <Route path="/" element={<Navigate to="/employee" />} />
         </Routes>
