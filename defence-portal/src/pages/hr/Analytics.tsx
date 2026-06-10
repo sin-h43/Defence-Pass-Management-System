@@ -4,6 +4,9 @@ import KPICards from '@/components/KPICards';
 import PeakTrafficChart from '@/components/PeakTrafficChart';
 import ComplianceReporting from '@/components/ComplianceReporting';
 import DepartmentBarChart from '@/components/DepartmentBarChart';
+
+import {PieChart, Pie, Tooltip,ResponsiveContainer,Cell} from 'recharts';
+import ClassificationPieChart from '@/components/ClassificationPieChart';
 // const departmentCrowdData = [
 //   { name: 'Research Wing', count: 124, fill: '#6366f1' },
 //   { name: 'IT & Cyber', count: 98, fill: '#a855f7' },
@@ -11,15 +14,6 @@ import DepartmentBarChart from '@/components/DepartmentBarChart';
 //   { name: 'Logistics', count: 54, fill: '#14b8a6' },
 //   { name: 'HR & Admin', count: 31, fill: '#f59e0b' },
 // ];
-
-// const categoryData = [
-//   { name: 'Contractors', value: 40, color: '#3b82f6' },
-//   { name: 'Government Officials', value: 25, color: '#f59e0b' },
-//   { name: 'Vendors', value: 20, color: '#10b981' },
-//   { name: 'Foreign Nationals', value: 10, color: '#ef4444' },
-//   { name: 'VIP Visitors', value: 5, color: '#ec4899' },
-// ];
-
 
 
 
@@ -54,8 +48,13 @@ export default function Analytics(){
             <PeakTrafficChart />
           </div>
           <DepartmentBarChart />
-          <ComplianceReporting />
 
+        <ClassificationPieChart/>
+
+          <ComplianceReporting />
+            
+                
+                
             </div>
           </div>  
     </div>
