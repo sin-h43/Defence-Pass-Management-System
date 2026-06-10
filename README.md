@@ -38,13 +38,6 @@ The system enforces strict workflow validation, role isolation, and security-fir
 * Trigger emergency lockdown
 * Blacklist or revoke visitor access
 
-## Super Admin Portal
-
-* Manage users and departments
-* Monitor audit logs
-* Track system activity
-* View security analytics
-
 ---
 
 # System Workflow
