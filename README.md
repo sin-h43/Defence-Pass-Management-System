@@ -7,7 +7,6 @@ A secure, enterprise-grade Visitor Pass Management System designed for restricte
 # Overview
 
 Traditional paper-based visitor systems are slow, difficult to audit, and vulnerable to unauthorized access. This project introduces a centralized digital platform that manages the complete lifecycle of a visitor pass — from request creation to final exit logging.
-
 The system enforces strict workflow validation, role isolation, and security-first access control while providing realtime monitoring and emergency lockdown capabilities.
 
 ---
@@ -130,7 +129,6 @@ The database is designed with normalized relational structures and strict foreig
 # Realtime Capabilities
 
 The platform uses WebSockets and Redis to support:
-
 * Live gate updates
 * Active occupancy tracking
 * Instant pass revocation
@@ -140,7 +138,6 @@ The platform uses WebSockets and Redis to support:
 ---
 
 # QR Verification System
-
 Approved visitors receive a digitally signed QR-based visitor pass.
 
 At the gate:
@@ -168,7 +165,6 @@ Revoked or expired passes are rejected instantly.
 # Project Goals
 
 This project aims to demonstrate:
-
 * Secure enterprise system design
 * Full-stack architecture
 * Role-based workflow systems
