@@ -20,13 +20,18 @@ The system enforces strict workflow validation, role isolation, and security-fir
 * Track approval status
 * Reuse repeat visitor profiles
 * View historical visit records
+- **Pre-Schedule Visitors:** Pre-register guests by scheduling dates, times, and purpose of visit in advance.
+- Create visitor access requests & upload government ID documents.
+- Track approval status in real-time.
+- Reuse repeat visitor profiles for faster booking.
+- View historical visit records.
 
 ## HR / HOD Verification Portal
 
 * Review and verify visitor requests
 * Approve or deny passes
 * Generate encrypted QR-based visitor passes
-* Access analytics dashboards
+* **HR Analytical Dashboard:** Access comprehensive visual metrics including active site occupancy, peak visitor hours, departmental breakdown, and historical logs.
 * Monitor active visitors on site
 
 ## Security Gate Portal
@@ -225,14 +230,12 @@ STORAGE_BUCKET=
 ---
 
 # Screens Included
-
-* Employee Dashboard
-* HR Verification Dashboard
-* Security Gate Control Panel
-* QR Scanner Interface
-* Analytics Dashboard
-* Emergency Lockdown Interface
-
+- Employee Dashboard (with Pre-Scheduling Form)
+- HR Verification Portal & Approval Queue
+- HR Analytical Dashboard (Visual metrics, department traffic, and occupancy trends)
+- Security Gate Control Panel
+- QR Scanner Interface
+- Emergency Lockdown Interface
 ---
 
 # License
