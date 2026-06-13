@@ -101,10 +101,10 @@ export default function VisitorMgmt() {
 
   const categories = [
     { name: "General Visitor", icon: User, desc: "For vendors, contractors, guests and general visitors.", color: "border-blue-500 bg-blue-50/20 text-blue-600" },
-    { name: "HR Related", icon: Briefcase, desc: "For candidates, interviewees, HR meetings and onboarding.", color: "border-purple-200" },
-    { name: "Government Official", icon: Building2, desc: "For government officials and authorized representatives.", color: "border-emerald-200" },
-    { name: "Foreign National", icon: Globe2, desc: "For foreign nationals requiring visa & passport verification.", color: "border-orange-200" },
-    { name: "Service Provider", icon: Truck, desc: "For technicians, maintenance and service personnel.", color: "border-amber-200" }
+    { name: "HR Related", icon: Briefcase, desc: "For candidates, interviewees, HR meetings and onboarding.", color: "border-purple-500 bg-purple-50/20 text-purple-600" },
+    { name: "Government Official", icon: Building2, desc: "For government officials and authorized representatives.", color: "border-emerald-500 bg-emerald-50/20 text-emerald-600" },
+    { name: "Foreign National", icon: Globe2, desc: "For foreign nationals requiring visa & passport verification.", color: "border-orange-500 bg-orange-50/20 text-orange-600" },
+    { name: "Service Provider", icon: Truck, desc: "For technicians, maintenance and service personnel.", color: "border-amber-500 bg-amber-50/20 text-amber-600" }
   ];
 
   const subTabs = ["All Visitors", "Pre-Scheduled", "Active", "Completed", "Cancelled"];
@@ -137,19 +137,39 @@ export default function VisitorMgmt() {
                     className={`p-4 bg-white border rounded-xl text-left transition-all flex flex-col justify-between group hover:shadow-sm ${
                       cat.name === "General Visitor" 
                         ? "border-blue-500 ring-2 ring-blue-50/50" 
-                        : "border-slate-200 hover:border-slate-300"
+                        : cat.name === "HR Related" 
+                          ? "border-purple-500 ring-2 ring-purple-50/50"
+                          : cat.name === "Government Official" 
+                          ? "border-emerald-500 ring-2 ring-emerald-50/50"
+                          : cat.name === "Foreign National" 
+                          ? "border-orange-500 ring-2 ring-orange-50/50"
+                          : cat.name === "Service Provider" 
+                          ? "border-amber-500 ring-2 ring-amber-50/50"
+                          : ""
                     }`}
                   >
-                    <div className={`p-2.5 rounded-lg border w-fit ${
-                      cat.name === "General Visitor" ? "bg-blue-50 text-blue-600 border-blue-100" : "bg-slate-50 text-slate-500 border-slate-100 group-hover:bg-slate-100"
-                    }`}>
+                    <div className={`p-2.5 rounded-lg border w-fit ${cat.color}`}>
                       <IconComponent className="h-4 w-4" />
                     </div>
                     <div className="mt-4">
                       <h4 className="text-xs font-bold text-slate-800">{cat.name}</h4>
                       <p className="text-[11px] text-slate-400 font-medium mt-1 leading-relaxed">{cat.desc}</p>
                     </div>
-                    <div className="mt-4 text-[10px] font-bold text-blue-600 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className={`mt-4 text-[10px] font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity
+                        ${
+                            cat.name === "General Visitor" 
+                        ? "text-blue-600" 
+                        : cat.name === "HR Related" 
+                          ? "text-purple-600"
+                          : cat.name === "Government Official" 
+                          ? "text-emerald-600"
+                          : cat.name === "Foreign National" 
+                          ? "text-orange-600"
+                          : cat.name === "Service Provider" 
+                          ? "text-amber-600"
+                          : ""
+                        }
+                        `}>
                       Select Category &rarr;
                     </div>
                   </button>
