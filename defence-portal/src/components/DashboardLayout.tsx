@@ -1,11 +1,12 @@
 import {cn} from '../lib/utils'
-import React, {useState} from 'react';
+ import React, {useState} from 'react';
 import { LayoutDashboard,Users, FileText, ShieldAlert, UserCheck, Settings, LogOut, ChevronRight,Search, Bell, PanelLeft,PanelRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function DashboardLayout({children}: {children: React.ReactNode}){
     const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState("Dashboard")
+    const location = useLocation();
+    // const [activeTab, setActiveTab] = useState("Dashboard")
     const [isPanelOpen, setIsPanelOpen] = useState(false)
 
     const navItems = [
@@ -42,17 +43,15 @@ export default function DashboardLayout({children}: {children: React.ReactNode})
           <nav className='p-3 space-y-1 mt-4 text-white'>
             {navItems.map((item)=>{
                 const Icon = item.icon
-                const isActive = activeTab == item.name
+                const isActive = location.pathname === item.path
                 return(
                     <button
                         key={item.name}
                        onClick={() => {
   // State setter is async, but putting it second ensures it gets queued
-  if (item.path) {
+  if (item.path) 
     navigate(item.path);
-  }
-  setActiveTab(item.name); 
-}}
+  }}
                         className={cn(
                           "group w-full h-10 bg-gray-700 rounded border border-amber-500/50 flex items-center text-sm hover:bg-gray-800 cursor-pointer transition-colors",
               isActive ? 'px-3 justify-between' : 'justify-center p-0',
