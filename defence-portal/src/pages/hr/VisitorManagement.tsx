@@ -1,136 +1,167 @@
-import React, { useState } from 'react';
-import { UserPlus, CheckCircle, XCircle, Clock, ShieldCheck, Search, Filter, ArrowUpRight } from 'lucide-react';
-import DashboardLayout from '@/components/DashboardLayout';
+import { useState } from "react";
+import { 
+  UserPlus, 
+  Users, 
+  ShieldAlert, 
+  FileText, 
+  Search, 
+  SlidersHorizontal,
+  User,
+  Briefcase,
+  Building2,
+  Globe2,
+  Truck
+} from "lucide-react";
+import DataTable from "../../components/DataTable";
+import DashboardLayout from "@/components/DashboardLayout";
 
-export default function VisitorManagement() {
-  // Mock data for visitor requests
-  const [visitors, setVisitors] = useState([
-    { id: "VP-2026-89A", name: "Dr. Amit Verma", organization: "DRDO", purpose: "Research Wing Audit", zone: "Block-C (Secure)", status: "Pending", time: "12:45 PM" },
-    { id: "VP-2026-90B", name: "Sarah Jenkins", organization: "Lockheed Contractor", purpose: "System Maintenance", zone: "Server Room Delta", status: "Approved", time: "01:15 PM" },
-    { id: "VP-2026-91C", name: "Capt. Rohan Sharma", organization: "Indian Army", purpose: "Briefing Session", zone: "HQ Command", status: "Active", time: "10:30 AM" },
-  ]);
+// Mock data based on the provided UI screenshot
+const MOCK_VISITORS = [
+  {
+    id: "VP-2026-001",
+    name: "Arjun Nair",
+    phone: "+91 98765 12345",
+    email: "arjun.nair@example.com",
+    category: "General Visitor",
+    host: "Rohit Singh",
+    department: "IT Department",
+    purpose: "Vendor Meeting",
+    requestedDate: "20 May 2026, 10:00 AM",
+    liveStatus: "Approved",
+    type: "One Day"
+  },
+  {
+    id: "VP-2026-002",
+    name: "Li Wei",
+    phone: "+91 91234 67890",
+    email: "l.wei@example.com",
+    category: "Foreign National",
+    host: "Dr. Kavita Rao",
+    department: "Research Wing",
+    purpose: "Technical Discussion",
+    requestedDate: "22 May 2026, 02:00 PM",
+    liveStatus: "Pending",
+    type: "One Day"
+  },
+  {
+    id: "VP-2026-003",
+    name: "Sneha Patel",
+    phone: "+91 93214 56789",
+    email: "sneha.patel@example.com",
+    category: "HR Related",
+    host: "Neha Kapoor",
+    department: "HR Department",
+    purpose: "Interview",
+    requestedDate: "23 May 2026, 11:30 AM",
+    liveStatus: "Approved",
+    type: "One Day"
+  },
+  {
+    id: "VP-2026-004",
+    name: "M. S. Krishnan",
+    phone: "+91 90087 64321",
+    email: "mskrishnan@gov.in",
+    category: "Government Official",
+    host: "Amit Sharma",
+    department: "Admin Department",
+    purpose: "Official Meeting",
+    requestedDate: "24 May 2026, 09:30 AM",
+    liveStatus: "Approved",
+    type: "One Day"
+  },
+  {
+    id: "VP-2026-005",
+    name: "Vikram Mahto",
+    phone: "+91 98700 11223",
+    email: "vikram.m@abc-services.com",
+    category: "Service Provider",
+    host: "Amit Sharma",
+    department: "Facilities",
+    purpose: "AC Maintenance",
+    requestedDate: "25 May 2026, 04:00 PM",
+    liveStatus: "CheckOut",
+    type: "One Day"
+  }
+];
+
+export default function VisitorMgmt() {
+  const [selectedTab, setSelectedTab] = useState("All Visitors");
+  const [selectedVisitor, setSelectedVisitor] = useState<any | null>(null);
+
+  const tableHeaders = [
+    "Visitor", 
+    "Category", 
+    "Host", 
+    "Purpose", 
+    "Visit Date & Time", 
+    "Status", 
+    "Pass Type", 
+    "Actions"
+  ];
+
+  const categories = [
+    { name: "General Visitor", icon: User, desc: "For vendors, contractors, guests and general visitors.", color: "border-blue-500 bg-blue-50/20 text-blue-600" },
+    { name: "HR Related", icon: Briefcase, desc: "For candidates, interviewees, HR meetings and onboarding.", color: "border-purple-200" },
+    { name: "Government Official", icon: Building2, desc: "For government officials and authorized representatives.", color: "border-emerald-200" },
+    { name: "Foreign National", icon: Globe2, desc: "For foreign nationals requiring visa & passport verification.", color: "border-orange-200" },
+    { name: "Service Provider", icon: Truck, desc: "For technicians, maintenance and service personnel.", color: "border-amber-200" }
+  ];
+
+  const subTabs = ["All Visitors", "Pre-Scheduled", "Active", "Completed", "Cancelled"];
 
   return (
+    
     <DashboardLayout>
-    <div className="space-y-6 text-slate-200">
-      
-      {/* 1. Header Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/60 pb-5">
-        <div>
-          <h2 className="text-xl font-bold text-white tracking-wide uppercase">
-            Visitor Management Control
-          </h2>
-          <p className="text-xs text-slate-400 font-mono mt-1">
-            Real-time facility access logging, vetting, and security clearance management.
-          </p>
-        </div>
+    <div className="flex min-h-screen bg-slate-50 font-sans antialiased text-slate-800">
+      {/* MAIN LAYOUT CONTEXT */}
+      <div className="flex-1 flex flex-col min-w-0">
         
-        <button className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-black font-bold text-xs uppercase tracking-wider rounded font-mono transition-colors shadow-lg shadow-amber-500/10">
-          <UserPlus size={16} />
-          Issue Express Pass
-        </button>
-      </div>
+        {/* COMPONENT CONTENT BODY */}
+        <div className="p-6 space-y-6 flex-1 overflow-y-auto">
+          
+          {/* Section: Welcome Title & Step Progression Tracker */}
+          <div>
+            <h2 className="text-lg font-bold text-slate-900">Add Visitor</h2>
+            <p className="text-slate-400 text-xs mt-0.5 font-medium">Create a new visitor pass token in a few simple steps.</p>
+          </div>    
 
-      {/* 2. Metrics Analytics Row */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {[
-          { title: "Active Inside", count: "42", label: "Personnel on-site", icon: ShieldCheck, color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20" },
-          { title: "Pending Clearance", count: "03", label: "Awaiting approval", icon: Clock, color: "text-amber-500 bg-amber-500/10 border-amber-500/20" },
-          { title: "Total Expected", count: "18", label: "Scheduled for today", icon: UserPlus, color: "text-blue-500 bg-blue-500/10 border-blue-500/20" },
-          { title: "Flagged/Denied", count: "01", label: "Security exceptions", icon: XCircle, color: "text-rose-500 bg-rose-500/10 border-rose-500/20" },
-        ].map((metric, idx) => (
-          <div key={idx} className={`bg-slate-900/40 border rounded-lg p-4 flex items-center justify-between ${metric.color}`}>
-            <div>
-              <p className="text-[10px] uppercase tracking-wider font-mono text-slate-400">{metric.title}</p>
-              <h3 className="text-2xl font-bold mt-1 text-white font-mono">{metric.count}</h3>
-              <p className="text-[10px] text-slate-500 mt-0.5">{metric.label}</p>
-            </div>
-            <metric.icon size={24} className="opacity-80" />
-          </div>
-        ))}
-      </div>
-
-      {/* 3. Filter and Table Container */}
-      <div className="bg-slate-900/30 border border-slate-800 rounded-lg overflow-hidden">
-        
-        {/* Table Filters header */}
-        <div className="p-4 bg-slate-900/60 border-b border-slate-800 flex flex-col sm:flex-row gap-3 justify-between items-center">
-          <span className="text-xs font-mono uppercase tracking-wider text-amber-500/80 font-semibold flex items-center gap-2">
-            <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-            Live Gate Clearances
-          </span>
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            <div className="flex items-center bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs w-full sm:w-48">
-              <Filter size={12} className="text-slate-500 mr-2" />
-              <select className="bg-transparent focus:outline-none text-slate-400 w-full cursor-pointer">
-                <option value="all">All Sectors</option>
-                <option value="pending">Pending Only</option>
-                <option value="active">Active Inside</option>
-              </select>
+          {/* Grid Layout Configuration: Category Select Deck */}
+          <div className="space-y-3">
+            <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">Choose visitor category</h3>
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              {categories.map((cat, i) => {
+                const IconComponent = cat.icon;
+                return (
+                  <button 
+                    key={i}
+                    className={`p-4 bg-white border rounded-xl text-left transition-all flex flex-col justify-between group hover:shadow-sm ${
+                      cat.name === "General Visitor" 
+                        ? "border-blue-500 ring-2 ring-blue-50/50" 
+                        : "border-slate-200 hover:border-slate-300"
+                    }`}
+                  >
+                    <div className={`p-2.5 rounded-lg border w-fit ${
+                      cat.name === "General Visitor" ? "bg-blue-50 text-blue-600 border-blue-100" : "bg-slate-50 text-slate-500 border-slate-100 group-hover:bg-slate-100"
+                    }`}>
+                      <IconComponent className="h-4 w-4" />
+                    </div>
+                    <div className="mt-4">
+                      <h4 className="text-xs font-bold text-slate-800">{cat.name}</h4>
+                      <p className="text-[11px] text-slate-400 font-medium mt-1 leading-relaxed">{cat.desc}</p>
+                    </div>
+                    <div className="mt-4 text-[10px] font-bold text-blue-600 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Select Category &rarr;
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
-        </div>
 
-        {/* Visitor Log Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr className="border-b border-slate-800 bg-slate-950/40 text-slate-400 uppercase tracking-wider font-mono text-[10px]">
-                <th className="p-4">Pass ID</th>
-                <th className="p-4">Visitor Details</th>
-                <th className="p-4">Affiliation</th>
-                <th className="p-4">Clearance Zone</th>
-                <th className="p-4">ETA / Time-In</th>
-                <th className="p-4">Status</th>
-                <th className="p-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/50">
-              {visitors.map((visitor) => (
-                <tr key={visitor.id} className="hover:bg-slate-800/20 transition-colors group">
-                  <td className="p-4 font-mono text-slate-400 group-hover:text-amber-500 transition-colors">
-                    {visitor.id}
-                  </td>
-                  <td className="p-4 font-medium text-white">
-                    {visitor.name}
-                    <span className="block text-[10px] text-slate-500 font-normal mt-0.5">{visitor.purpose}</span>
-                  </td>
-                  <td className="p-4 text-slate-300 font-mono">{visitor.organization}</td>
-                  <td className="p-4">
-                    <span className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700/60 font-mono text-[10px]">
-                      {visitor.zone}
-                    </span>
-                  </td>
-                  <td className="p-4 text-slate-400 font-mono">{visitor.time}</td>
-                  <td className="p-4">
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded font-mono text-[10px] uppercase tracking-wide font-medium
-                      ${visitor.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : ''}
-                      ${visitor.status === 'Approved' ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20' : ''}
-                      ${visitor.status === 'Pending' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20 animate-pulse' : ''}
-                    `}>
-                      {visitor.status}
-                    </span>
-                  </td>
-                  <td className="p-4 text-right">
-                    {visitor.status === 'Pending' ? (
-                      <div className="flex items-center justify-end gap-2">
-                        <button className="p-1 text-emerald-500 hover:bg-emerald-500/10 rounded border border-transparent hover:border-emerald-500/30 transition-all" title="Approve Entry">
-                          <CheckCircle size={15} />
-                        </button>
-                        <button className="p-1 text-rose-500 hover:bg-rose-500/10 rounded border border-transparent hover:border-rose-500/30 transition-all" title="Deny Entry">
-                          <XCircle size={15} />
-                        </button>
-                      </div>
-                    ) : (
-                      <button className="text-slate-500 hover:text-white inline-flex items-center gap-0.5 font-mono text-[10px]" title="View Logs">
-                        Logs <ArrowUpRight size={12} />
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <hr className="border-slate-200" />
+
+          
+
         </div>
       </div>
     </div>
