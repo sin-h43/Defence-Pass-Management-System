@@ -1,158 +1,107 @@
-import { useState } from "react";
-import { UserPlus, ShieldAlert, Globe, Briefcase, Building, User } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { User, Briefcase, Building2, Globe2, Truck } from "lucide-react";
 
-type AdvancedCategory = 'general' | 'hr' | 'government' | 'foreign' | 'service';
+type AdvancedCategory = 'general-visitor' | 'hr-related' | 'government-official' | 'foreign-national' | 'service-provider';
 
 interface AdvancedRegistrationFormProps {
+  initialCategory: AdvancedCategory;
   onSubmitSuccess: (formData: any) => void;
 }
 
-export default function AdvancedRegistrationForm({ onSubmitSuccess }: AdvancedRegistrationFormProps) {
-  const [category, setCategory] = useState<AdvancedCategory | null>(null);
-  
+// Map the keys coming from your URL parameter to the correct icons/labels
+const CATEGORY_MAP: Record<AdvancedCategory, { label: string; icon: React.ComponentType<any>; color: string }> = {
+  'general-visitor': { label: "General Visitor", icon: User, color: "text-blue-600 bg-blue-50/50 border-blue-200" },
+  'hr-related': { label: "HR Related Pass", icon: Briefcase, color: "text-purple-600 bg-purple-50/50 border-purple-200" },
+  'government-official': { label: "Government Official Clearance", icon: Building2, color: "text-emerald-600 bg-emerald-50/50 border-emerald-200" },
+  'foreign-national': { label: "Foreign National Passport Verification", icon: Globe2, color: "text-orange-600 bg-orange-50/50 border-orange-200" },
+  'service-provider': { label: "Service Provider Authorization", icon: Truck, color: "text-amber-600 bg-amber-50/50 border-amber-200" }
+};
+
+export default function AdvancedRegistrationForm({ initialCategory, onSubmitSuccess }: AdvancedRegistrationFormProps) {
   // Base Form States
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [idRef, setIdRef] = useState('');
-  const [extraReference, setExtraReference] = useState(''); // Visa, Company, or Agency
-  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [extraReference, setExtraReference] = useState('');
 
-  // 2. Handle Form Submission
+  // Reset form inputs if the pipeline category switches
+  useEffect(() => {
+    setIdRef('');
+    setExtraReference('');
+  }, [initialCategory]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const formData = {
+    onSubmitSuccess({
       name,
       email,
       idRef,
-      category,
       extraReference,
-      fileName: uploadedFile ? uploadedFile.name : null 
-    };
-
-    onSubmitSuccess(formData);
-    alert(`${category?.toUpperCase()} entry pass application submitted successfully.`);
-    
-    // Reset Form
-    setName('');
-    setEmail('');
-    setIdRef('');
-    setExtraReference('');
-    setUploadedFile(null);
-    setCategory(null);
+      category: initialCategory
+    });
   };
 
-  // 1. Initial Card Selection Screen
-  if (!category) {
-    return (
-      <div className="p-6 bg-gray-900 rounded-xl border border-[#21262d] space-y-4">
-        <h3 className="text-sm font-semibold text-gray-200 uppercase tracking-wider">
-          Select Security Processing Pipeline
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-          <button onClick={() => setCategory('general')} className="p-4 bg-[#0d1117] border border-[#30363d] hover:border-amber-500 rounded-xl text-left space-y-1 transition-all">
-            <div className="flex items-center gap-2 text-amber-500 font-semibold"><User className="h-4 w-4"/> General Visitor</div>
-            <p className="text-gray-400">For vendors, guests, and general personnel.</p>
-          </button>
-          
-          <button onClick={() => setCategory('hr')} className="p-4 bg-[#0d1117] border border-[#30363d] hover:border-purple-500 rounded-xl text-left space-y-1 transition-all">
-            <div className="flex items-center gap-2 text-purple-500 font-semibold"><Briefcase className="h-4 w-4"/> HR Related</div>
-            <p className="text-gray-400">For job candidates, interviewees, and onboarding.</p>
-          </button>
+  const currentMeta = CATEGORY_MAP[initialCategory] || CATEGORY_MAP['general-visitor'];
+  const IconComponent = currentMeta.icon;
 
-          <button onClick={() => setCategory('government')} className="p-4 bg-[#0d1117] border border-[#30363d] hover:border-blue-500 rounded-xl text-left space-y-1 transition-all">
-            <div className="flex items-center gap-2 text-blue-500 font-semibold"><Building className="h-4 w-4"/> Government Official</div>
-            <p className="text-gray-400">For department inspectors and authorized officials.</p>
-          </button>
-
-          <button onClick={() => setCategory('foreign')} className="p-4 bg-[#0d1117] border border-[#30363d] hover:border-emerald-500 rounded-xl text-left space-y-1 transition-all">
-            <div className="flex items-center gap-2 text-emerald-500 font-semibold"><Globe className="h-4 w-4"/> Foreign National</div>
-            <p className="text-gray-400">Requires mandatory Passport & Visa logging.</p>
-          </button>
-
-          <button onClick={() => setCategory('service')} className="p-4 bg-[#0d1117] border border-[#30363d] hover:border-orange-500 rounded-xl text-left space-y-1 transition-all">
-            <div className="flex items-center gap-2 text-orange-500 font-semibold"><ShieldAlert className="h-4 w-4"/> Service Provider</div>
-            <p className="text-gray-400">For facilities maintenance, IT support, and technicians.</p>
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // 2. Render Selected Input Fields
   return (
-    <div className="bg-gray-900 border border-[#21262d] rounded-xl overflow-hidden flex flex-col text-xs">
-      <div className="p-4 border-b border-[#21262d] flex items-center justify-between bg-gray-950/40">
-        <div className="flex items-center gap-2">
-          <UserPlus className="h-4 w-4 text-amber-500" />
-          <span className="font-semibold text-gray-200 capitalize">{category} Pass Registry</span>
+    <div className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden text-xs">
+      
+      {/* Form Context Banner with matching Icon */}
+      <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-2 text-slate-700 font-bold tracking-wide">
+        <div className={`p-1.5 rounded-md border ${currentMeta.color}`}>
+          <IconComponent className="h-3.5 w-3.5" />
         </div>
-        <button 
-          onClick={() => setCategory(null)} 
-          className="text-gray-400 hover:text-white underline text-[11px]"
-        >
-          Change Category
-        </button>
+        <span>{currentMeta.label} Registration Form</span>
       </div>
 
-      <form className="p-5 space-y-4" onSubmit={handleSubmit}>
-        {/* Universal fields */}
+      <form onSubmit={handleSubmit} className="p-5 space-y-4">
+        {/* Basic Fields */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="space-y-1">
-            <label className="text-gray-300">Full Name</label>
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg p-2 text-white" required />
+            <label className="text-slate-600 font-bold">Full Name *</label>
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter full name" className="w-full bg-white border border-slate-200 rounded-lg p-2 text-slate-800 focus:outline-none focus:border-blue-500 font-medium" required />
           </div>
           <div className="space-y-1">
-            <label className="text-gray-300">Email Address</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg p-2 text-white" required />
+            <label className="text-slate-600 font-bold">Email ID *</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter email address" className="w-full bg-white border border-slate-200 rounded-lg p-2 text-slate-800 focus:outline-none focus:border-blue-500 font-medium" required />
           </div>
         </div>
 
-        {/* Polymorphic ID Reference Fields */}
+        {/* Polymorphic ID Row */}
         <div className="space-y-1">
-          <label className="text-gray-300 font-medium">
-            {category === 'foreign' ? 'Passport Number *' : 'Govt Issued ID / Clearance Badge Reference *'}
+          <label className="text-slate-600 font-bold">
+            {initialCategory === 'foreign-national' ? 'Passport Number *' : 'Govt Issued ID / Identity Card Reference *'}
           </label>
           <input 
             type="text" 
             value={idRef} 
             onChange={(e) => setIdRef(e.target.value.toUpperCase())}
-            placeholder={category === 'foreign' ? "e.g. Z1234567" : "12-Digit Aadhaar / Alphanumeric Card ID"}
-            className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg p-2 text-white" 
+            placeholder={initialCategory === 'foreign-national' ? "Enter passport alphanumeric text" : "12-Digit Aadhaar / Alphanumeric ID"}
+            className="w-full bg-white border border-slate-200 rounded-lg p-2 text-slate-800 focus:outline-none focus:border-blue-500 font-medium" 
             required 
           />
         </div>
 
-        {/* Contextual Sub-Fields based on Selected Category */}
-        {category === 'foreign' && (
+        {/* Conditional Fields based on pipeline string */}
+        {initialCategory === 'foreign-national' && (
           <div className="space-y-1 animate-in fade-in duration-200">
-            <label className="text-gray-300">Visa Number / Entry Permit Reference *</label>
-            <input type="text" value={extraReference} onChange={(e) => setExtraReference(e.target.value)} placeholder="e.g. V9876543" className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg p-2 text-white" required />
+            <label className="text-slate-600 font-bold">Visa Number / Entry Permit Reference *</label>
+            <input type="text" value={extraReference} onChange={(e) => setExtraReference(e.target.value)} placeholder="e.g. V9876543" className="w-full bg-white border border-slate-200 rounded-lg p-2 text-slate-800 focus:outline-none focus:border-blue-500 font-medium" required />
           </div>
         )}
 
-        {(category === 'government' || category === 'service') && (
+        {(initialCategory === 'government-official' || initialCategory === 'service-provider') && (
           <div className="space-y-1 animate-in fade-in duration-200">
-            <label className="text-gray-300">Representing Agency / Agency / Employer Name *</label>
-            <input type="text" value={extraReference} onChange={(e) => setExtraReference(e.target.value)} placeholder="e.g. Central Command / CleanTech Facilities" className="w-full bg-[#0d1117] border border-[#30363d] rounded-lg p-2 text-white" required />
+            <label className="text-slate-600 font-bold">Representing Agency / Employer / Department Name *</label>
+            <input type="text" value={extraReference} onChange={(e) => setExtraReference(e.target.value)} placeholder="e.g. Central Command / CleanTech Facilities" className="w-full bg-white border border-slate-200 rounded-lg p-2 text-slate-800 focus:outline-none focus:border-blue-500 font-medium" required />
           </div>
         )}
 
-        {/* ... Keep File Upload Drop-Zone and Action Buttons below ... */}
-        {/* Action Buttons */}
-        <div className="pt-4 flex items-center justify-end gap-2">
-          <button 
-            type="button"
-            onClick={() => setCategory(null)}
-            className="px-4 py-2 bg-transparent border border-gray-700 hover:bg-gray-800 rounded-lg text-gray-300 hover:text-white font-medium transition"
-          >
-            Cancel
-          </button>
-          <button 
-            type="submit" 
-            className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-[#0d1117] font-bold rounded-lg transition shadow-lg shadow-amber-500/10"
-          >
-            Submit Application
+        {/* Submit Core */}
+        <div className="pt-4 flex items-center justify-end gap-2 border-t border-slate-100">
+          <button type="submit" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg transition shadow-sm">
+            Generate Security Pass
           </button>
         </div>
       </form>

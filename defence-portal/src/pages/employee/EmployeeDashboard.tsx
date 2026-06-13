@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { savePass } from '../../utils/passStorage';
 import DataTable from '../../components/DataTable';
-import RegistrationForm from '../../components/RegistrationForm'; // Used as component in JSX
+import RegistrationForm from '../../components/EmpRegistrationForm'; // Used as component in JSX
 import { filterByIdentityAndId } from '../../utils/searchFilters';
 import type { Visitor } from '../../utils/searchFilters';
 import type { PassRecord } from '../../utils/passStorage'; // Import PassRecord type

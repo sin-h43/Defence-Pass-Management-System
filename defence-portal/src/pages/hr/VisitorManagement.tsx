@@ -10,7 +10,7 @@ import {
 } from "lucide-react";
 import DataTable from "../../components/DataTable";
 import DashboardLayout from "@/components/DashboardLayout";
-
+import { useNavigate } from 'react-router-dom';
 // Mock data based on the provided UI screenshot
 const MOCK_VISITORS = [
   {
@@ -81,6 +81,7 @@ const MOCK_VISITORS = [
 ];
 
 export default function VisitorMgmt() {
+    const navigate = useNavigate();
   const [selectedTab, setSelectedTab] = useState("All Visitors");
   const [selectedVisitor, setSelectedVisitor] = useState<any | null>(null);
 
@@ -127,9 +128,11 @@ export default function VisitorMgmt() {
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               {categories.map((cat, i) => {
                 const IconComponent = cat.icon;
+                const categoryKey = cat.name.toLowerCase().replace(" ", "-");
                 return (
                   <button 
                     key={i}
+                    onClick={()=> navigate(`/hr/visitorMgmt/register?type=${categoryKey}`)}
                     className={`p-4 bg-white border rounded-xl text-left transition-all flex flex-col justify-between group hover:shadow-sm ${
                       cat.name === "General Visitor" 
                         ? "border-blue-500 ring-2 ring-blue-50/50" 

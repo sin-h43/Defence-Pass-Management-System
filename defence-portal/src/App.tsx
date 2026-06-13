@@ -8,7 +8,7 @@ import { RepeatedVisitorsProvider } from './contexts/RepeatedVisitorsContext'; /
 import HRDashboard from './pages/hr/HrDashboard.tsx';
 import VisitorManagement from './pages/hr/VisitorManagement.tsx';
 import Analytics from './pages/hr/Analytics.tsx';
-
+import VisitorRegistrationPage from './pages/hr/VisitorRegistrationPage.tsx';
 //placeholder for HR n Security until we write their full code 
 
 const SecurityDashboard = () => (
@@ -50,6 +50,7 @@ function App() {
           path = "/hr/visitorMgmt"
           element = {<VisitorManagement/>}
           />
+          <Route path="/hr/visitorMgmt/register" element={<VisitorRegistrationPage />} />
           <Route
           path = "/hr/analytics"
           element = {<Analytics/>}
