@@ -160,7 +160,49 @@ export default function VisitorMgmt() {
 
           <hr className="border-slate-200" />
 
-          
+          {/* Section Dynamic Context View: Table Filter Controls and Core Grid */}
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div>
+                <h3 className="text-xs font-bold text-slate-700 uppercase tracking-wider">Recently Added Visitors</h3>
+              </div>
+              
+              {/* Context Search Filter input array */}
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <div className="relative flex-1 sm:w-64">
+                  <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-400" />
+                  <input 
+                    type="text" 
+                    placeholder="Search visitor, host or purpose..." 
+                    className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-medium text-slate-700 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
+                  />
+                </div>
+                <button className="flex items-center gap-1.5 px-3 py-2 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+                  <SlidersHorizontal className="h-3.5 w-3.5 text-slate-400" />
+                  <span>Filters</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Sub-Tabs Selector Layer matching image */}
+            <div className="flex items-center gap-1 border-b border-slate-200 text-xs font-semibold select-none">
+              {subTabs.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setSelectedTab(tab)}
+                  className={`px-3 py-2 border-b-2 font-bold transition-all ${
+                    selectedTab === tab 
+                      ? "border-blue-600 text-blue-600" 
+                      : "border-transparent text-slate-400 hover:text-slate-600"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+
+            
+          </div>
 
         </div>
       </div>
