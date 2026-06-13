@@ -201,7 +201,13 @@ export default function VisitorMgmt() {
               ))}
             </div>
 
-            
+            {/* Dynamic Table Insertion Point */}
+            <DataTable 
+              headers={tableHeaders} 
+              rows={MOCK_VISITORS}
+              externalSelectedRow={selectedVisitor}
+              onExternalSelectRow={(row) => setSelectedVisitor(row)}
+            />
           </div>
 
         </div>
